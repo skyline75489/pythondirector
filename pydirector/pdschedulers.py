@@ -2,6 +2,12 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #   
+# $Id: pdschedulers.py,v 1.2 2002/07/01 05:33:16 anthonybaxter Exp $
+#
+
+import sys
+if sys.version_info < (2,2):
+    class object: pass
 
 import pdconf
 
@@ -35,7 +41,7 @@ class BaseScheduler:
             self.newHost(host.ip, host.name)
         #print self.hosts
 
-    def getStats(self, verbose=1):
+    def getStats(self, verbose=0):
         out = {}
         out['open'] = {}
         hc = self.openconns.items()
@@ -44,10 +50,6 @@ class BaseScheduler:
             out['open']['%s:%s'%h] = c
         bh = self.badhosts
         out['bad'] = bh
-        if 0 and verbose:
-            oh = [x[1] for x in self.open.values()]
-            oh.sort()
-	    out['all'] = oh
         return out
 
     def showStats(self, verbose=1):
@@ -71,7 +73,7 @@ class BaseScheduler:
             self.openconns[host] = cur+1
             return host
 
-    def getHosts(self):
+    def getHostNames(self):
         return self.hostnames
 
     def doneHost(self, s_id):
@@ -95,7 +97,7 @@ class BaseScheduler:
             if type(ip) is not type(()):
                 ip = pdconf.splitHostPort(ip)
         elif name is not None:
-            for ip in self.hostnames:
+            for ip in self.hostnames.keys():
                 if self.hostnames[ip] == name:
                     break
             raise ValueError, "No host named %s"%(name)
