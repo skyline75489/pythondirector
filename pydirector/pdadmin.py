@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com) 
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdadmin.py,v 1.4 2002/07/01 08:52:22 anthonybaxter Exp $
+# $Id: pdadmin.py,v 1.5 2002/07/02 05:58:18 anthonybaxter Exp $
 #
 
 import sys
@@ -79,6 +79,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
             <div class="footer">
             <a href="/">top</a>
             <a href="running">running</a>
+            <a href="running.xml">running.xml</a>
             <a href="config.xml">config.xml</a>
             <a href="http://pythondirector.sf.net">pythondirector</a>
             </div>""")
@@ -157,7 +158,82 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
                  time.ctime(self.starttime)))
         self.footer()
 
-    def pdadmin_running_txt(self, verbose, Access='Read'):
+    def pdadmin_running_xml(self, verbose=0, Access='Read'):
+        from xml.dom.minidom import Document
+        self.header(html=0)
+        W = self.wfile.write
+        conf = self.director.conf
+        doc = Document()
+        top = doc.createElement("pdconfig")
+        doc.appendChild(top)
+        for service in conf.getServices():
+            top.appendChild(doc.createTextNode("\n    "))
+            serv = doc.createElement("service")
+            serv.setAttribute('name', service.name)
+            top.appendChild(serv)
+            serv.appendChild(doc.createTextNode("\n        "))
+            listen = doc.createElement("listen")
+            listen.setAttribute('ip', service.listen)
+            serv.appendChild(listen)
+            groups = service.getGroups()
+            for group in groups:
+                serv.appendChild(doc.createTextNode("\n        "))
+                sch = self.director.getScheduler(service.name, group.name)
+                xg = doc.createElement("group")
+                xg.setAttribute('name', group.name)
+                xg.setAttribute('scheduler', sch.schedulerName)
+                serv.appendChild(xg)
+                stats = sch.getStats(verbose=verbose)
+                hosts = group.getHosts()
+                hdict = sch.getHostNames()
+                counts = stats['open']
+                clients = counts.keys() # clients is now a list of active hosts
+                # now add disabled hosts.
+                for k in stats['bad'].keys():
+                    clients.append('%s:%s'%k)
+                clients.sort() 
+                for h in clients:
+                    xg.appendChild(doc.createTextNode("\n            "))
+                    xh = doc.createElement("client")
+                    xh.setAttribute('name', hdict[h])
+                    xh.setAttribute('ip', h)
+                    xg.appendChild(xh)
+                xg.appendChild(doc.createTextNode("\n        "))
+            serv.appendChild(doc.createTextNode("\n        "))
+            eg = service.getEnabledGroup()
+            xeg = doc.createElement("enable")
+            xeg.setAttribute("group", eg.name)
+            serv.appendChild(xeg)
+            serv.appendChild(doc.createTextNode("\n    "))
+        top.appendChild(doc.createTextNode("\n    "))
+        # now the admin block
+        admin = self.director.conf.admin
+        if admin is not None:
+            xa = doc.createElement("admin")
+            xa.setAttribute("listen", "%s:%s"%admin.listen)
+            top.appendChild(xa)
+            for user in admin.getUsers():
+                xa.appendChild(doc.createTextNode("\n        "))
+                xu = doc.createElement("user")
+                xu.setAttribute("name", user.name)
+                xu.setAttribute("password", user.password)
+                xu.setAttribute("access", user.access)
+                xa.appendChild(xu)
+            xa.appendChild(doc.createTextNode("\n    "))
+            top.appendChild(doc.createTextNode("\n    "))
+        # finally, the logging section (if set)
+        logger = pdlogging.Logger
+        if logger.logfile is not None:
+            xl = doc.createElement("logging")
+            xl.setAttribute("file", logger.logfile)
+            top.appendChild(xl)
+        # final newline
+        top.appendChild(doc.createTextNode("\n"))
+        # and spit out the XML
+        self.wfile.write(doc.toxml())
+
+
+    def pdadmin_running_txt(self, verbose=0, Access='Read'):
         self.header(html=0)
         W = self.wfile.write
         conf = self.director.conf
@@ -169,9 +245,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
                 sch = self.director.getScheduler(service.name, group.name)
                 stats = sch.getStats(verbose=verbose)
                 hosts = group.getHosts()
-                hdict = {}
-                for h in hosts:
-                    hdict[h.ip] = h.name
+                hdict = sch.getHostNames()
                 if group is eg:
                     klass = 'enabled'
                 else:
@@ -289,7 +363,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
         self.action_done('not implemented yet')
         self.wfile.write("OK\n")
         
-    def pdadmin_config_xml(self, Access='Write'):
+    def pdadmin_config_xml(self, Access='Read'):
         self.header(html=0)
         self.wfile.write(self.director.conf.dom.toxml())
 
