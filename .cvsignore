@@ -1,6 +1,8 @@
 *.pyo
 *.pyc
 *.cover
+build
+dist
 pychecker.out
 index.html*
 testbed
