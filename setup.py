@@ -20,7 +20,7 @@ setup(
     packages = ['pydirector'],
     scripts = ['pydir.py'],
     classifiers = [
-       'Development Status :: 3 - Alpha',
+       'Development Status :: 5 - Production/Stable',
        'Environment :: Web Environment',
        'Environment :: No Input/Output (Daemon)',
        'License :: OSI Approved :: Python Software Foundation License',

@@ -1,8 +1,8 @@
 #
-# Copyright (c) 2002-2003 ekit.com Inc (http://www.ekit-inc.com)
+# Copyright (c) 2002-2004 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdmain.py,v 1.10 2003/10/09 08:53:42 anthonybaxter Exp $
+# $Id: pdmain.py,v 1.11 2004/12/14 13:31:39 anthonybaxter Exp $
 #
 
 import sys

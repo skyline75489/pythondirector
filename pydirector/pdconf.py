@@ -1,8 +1,8 @@
 #
-# Copyright (c) 2002-2003 ekit.com Inc (http://www.ekit-inc.com)
+# Copyright (c) 2002-2004 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdconf.py,v 1.17 2004/08/18 05:36:50 anthonybaxter Exp $
+# $Id: pdconf.py,v 1.18 2004/12/14 13:31:39 anthonybaxter Exp $
 #
 
 import sys

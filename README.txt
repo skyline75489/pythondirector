@@ -1,4 +1,4 @@
-README for pythondirector 0.0.7
+README for pythondirector 1.0.0
 
 This is a pure python TCP load balancer. It takes inbound TCP
 connections and connects them to one of a number of backend
@@ -56,20 +56,21 @@ API (web based):
 
 Twisted vs. asyncore
 
-Edit pydirector/pdnetwork.py and uncomment the appropriate line if
-you'd like to switch from the twisted implementation to the asyncore
-implementation. Note that the twisted implementation is much, much
-faster, but does require an additional package - see 
-http://www.twistedmatrix.com for the software.
+Pythondirector will use either twisted or asyncore for it's networking -
+it prefers twisted.  The twisted implementation is much, much faster, 
+but does require an additional package - see http://www.twistedmatrix.com 
+for the software.
 
 I've also seen "weird failures" from asyncore with some sort of nasty
 race condition. 
 
-Moving forward, the asyncore implementation is going away, and the
-existing separate manager and admin threads will merge into the main
-twisted reactor loop.
-
 ----------------------------------------------------------------------
+
+Changes from 0.0.7 to 1.0.0
+
+- Very few, mostly this is to update the project to 'stable' status.
+- The networking code now uses twisted if available, and falls back
+  to asyncore.
 
 Changes from 0.0.6 to 0.0.7
 
@@ -142,7 +143,7 @@ Changes from 0.0.1 to 0.0.2:
 
 This software is covered by the following license:
 
-Copyright (c) 2002-2003 ekit.com Inc (http://www.ekit-inc.com/) 
+Copyright (c) 2002-2004 ekit.com Inc (http://www.ekit-inc.com/) 
 and Anthony Baxter <anthony@interlink.com.au>
 
 Permission is hereby granted, free of charge, to any person obtaining a

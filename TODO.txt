@@ -1,10 +1,9 @@
-Things to complete before 0.2:
+Things that could be added:
     logging cleanup
     scheduler stats structures cleanup
     adminUp/adminDown host
     'weighted' hosts
 
-Things to complete before 0.1:
     more doco
     write a client that compares config xml and running xml, and updates
       the latter to match the former. mostly there now, see compareconf
@@ -14,21 +13,12 @@ Things to complete before 0.1:
     Replace crappy manager thread and admin thread with twisted-based 
       implementations.
 
-Things to complete before 0.0.8:
     Caching of DNS lookups
     dump out curBadHosts/histBadHosts/open
     make the connection checker work
     sticky connections. keep a cache of 'client_ip':'backend_ip'. 
       manager needs to be able to call "scheduler.cleanup()" to allow the
       cache to be manageable.
-
-Lots and lots more documentation
-
-Don't need asynchat any more - switch the Receiver and Sender to use
-asyncore.dispatcher, instead.
-
-Consider how much of the Twisted kool-aid I want to drink - replace 
-the bits that aren't already in Twisted?
 
 Admin interface bits left to do:
 
