@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdconf.py,v 1.11 2003/04/30 06:04:23 anthonybaxter Exp $
+# $Id: pdconf.py,v 1.12 2003/04/30 06:34:36 anthonybaxter Exp $
 #
 
 import sys
@@ -73,7 +73,7 @@ class PDService(object):
         newgroup.scheduler = groupobj.getAttribute('scheduler')
         cc = 0
         for host in groupobj.childNodes:
-            if host.nodeName == "#text": continue
+            if host.nodeName in ("#text", "#comment"): continue
             if host.nodeName != u'host':
                 raise ConfigError, \
                     "expected 'host', got '%s'"%host.nodeName
@@ -179,7 +179,7 @@ class PDConfig(object):
             raise ConfigError, "expected top level 'pdconfig', got '%s'"%(
                                                                 dom.nodeName)
         for item in dom.childNodes:
-            if item.nodeName == "#text": continue
+            if item.nodeName == ("#text", "#comment"): continue
             if item.nodeName not in ( u'service', u'admin', u'logging' ):
                 raise ConfigError, \
                     "expected 'service' or 'admin', got '%s'"%item.nodeName
@@ -209,7 +209,7 @@ class PDConfig(object):
         if admin.hasAttribute('secure'):
             adminServer.secure = admin.getAttribute('secure')
         for user in admin.childNodes:
-            if user.nodeName == "#text": continue
+            if user.nodeName == ("#text", "#comment"): continue
             if user.nodeName == u'user':
                 adminServer.loadUser(user)
             else:
@@ -229,7 +229,7 @@ class PDConfig(object):
         serviceName = service.getAttribute('name')
         newService = PDService(serviceName)
         for c in service.childNodes:
-            if c.nodeName == "#text": continue
+            if c.nodeName == ("#text", "#comment"): continue
             if c.nodeName == u'listen':
                 newService.listen.append(c.getAttribute('ip'))
             elif c.nodeName == u'group':
