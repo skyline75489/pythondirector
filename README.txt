@@ -11,6 +11,9 @@ Contact email: Anthony Baxter <anthony@interlink.com.au>
 
 Features:
 
+  - by default, uses the Twisted framework for async I/O, but can
+    also use asyncore.
+
   - async i/o based, so much less overhead than fork/thread based
     balancers
 
@@ -34,6 +37,34 @@ API (web based):
     See doc/webapi.txt for a full list of web api commands
 
 ----------------------------------------------------------------------
+
+Twisted vs. asyncore
+
+Edit pydirector/pdnetwork.py and uncomment the appropriate line if
+you'd like to switch from the twisted implementation to the asyncore
+implementation. Note that the twisted implementation is much, much
+faster, but does require an additional package - see 
+http://www.twistedmatrix.com for the software.
+
+I've also seen "wierd failures" from asyncore with some sort of nasty
+race condition. 
+
+----------------------------------------------------------------------
+
+
+Changes from 0.0.4 to 0.0.5:
+
+- bunch of bugfixes to the logging
+- re-implemented the networking code using the 'twisted' framework
+  (a simple loopback test:
+    asyncore based pydir:
+      Requests per second:    107.72
+      Transfer rate:          2462.69 kb/s received
+    twisted based pydir:
+      Requests per second:    197.90
+      Transfer rate:          4519.69 kb/s received
+    (5 way, 2000 fetches)
+  )
 
 Changes from 0.0.3 to 0.0.4:
 
