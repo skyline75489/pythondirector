@@ -13,6 +13,13 @@ Things to complete before 0.1:
       new code immediately. Let old connections on old pydir finish (run to 
       completion) before exiting.
 
+Things to complete before 0.0.5:
+    DNS lookups
+    dump out curBadHosts/histBadHosts/open
+    Figure out where the openconns leak is from
+    make the conn checker work
+    
+
 Lots and lots more documentation
 
 Don't need asynchat any more - switch the Receiver and Sender to use
@@ -38,6 +45,10 @@ Admin interface bits left to do:
     hostAdminDown
     hostAdminUp
     [maybe] shutdown?
+
+side-effect of leastconns on systems without constant load -
+sort (count, name) means that servers starting with 'a' get
+a lot more hits than ones starting with 'z'.
 
 multiple admins for a pydir (e.g. one http, one https)
 
@@ -79,6 +90,5 @@ there now, use the undocumented 'secure="yes"' flag to the admin directive.
 
 Additional idea: connection count scheduler. could be used to track 
 licensing of a service, or limit it.
-
 
 
