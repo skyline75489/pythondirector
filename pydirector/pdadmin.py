@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com) 
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdadmin.py,v 1.7 2002/07/03 07:39:19 anthonybaxter Exp $
+# $Id: pdadmin.py,v 1.8 2002/07/03 08:11:54 anthonybaxter Exp $
 #
 
 import sys
@@ -57,7 +57,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
         self.send_header('WWW-Authenticate', 'basic realm="python director"')
         self.wfile.write("<p>Unauthorised</p>\n")
 
-    def header(self, html=1):
+    def header(self, html=1, refresh=''):
         self.send_response(200)
         if html:
             self.send_header("Content-type", "text/html")
@@ -68,7 +68,10 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
             W = self.wfile.write
             W("""<html><head><title>python director</title>
                  <link rel=stylesheet type="text/css" href="/pydirector.css">
-                 </head></body>""")
+            """)
+            if refresh:
+                W('<META HTTP-EQUIV=Refresh CONTENT="60; URL=%s">'%refresh)
+            W("""</head></body>""")
             W("""
             <div class="title">Python Director version %s, running on host %s.</div>
             """%(self.server_version, socket.gethostname()))
@@ -267,11 +270,18 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
                     when,what = bad[k]
                     W(" %s -\n"%what)
 
-    def pdadmin_running(self, verbose=0, resultmessage='', Access='Read'):
+    def pdadmin_running(self, verbose=0, refresh=0, ignore='', resultmessage='', Access='Read'):
         from urllib import quote
-        self.header(html=1)
+        self.header(html=1, refresh='/running?refresh=1&ignore=%s'%time.time())
         W = self.wfile.write
-        W("<p><b>current config</b></p>\n")
+        W('<p><b>current config</b></p>\n')
+        W('<p>last update at %s</p>\n'%time.ctime(time.time()))
+        W('<p><a class="button" href="/running?ignore=%s">Refresh</a>'%time.time())
+        if refresh:
+            W('<a class="button" href="/running?ignore=%s">Stop auto-refresh</a></p>'%time.time())
+        else:
+            W('<a class="button" href="/running?refresh=1&ignore=%s">Start auto-refresh</a></p>'%time.time())
+        W("<p></p>\n")
         conf = self.director.conf
         for service in conf.getServices():
             W('<table><tr><th align="left" colspan="1">Service: %s</th></tr>\n'%
@@ -520,11 +530,12 @@ p.bigbutton {
     border: thin solid #cc4400 ;
     padding: 2px ;
 }
-p.button {
+a.button {
     color: #000000 ; 
     background-color: #eebbee ; 
     border: thin solid #cc4400 ;
-    padding: 0px ;
+    padding: 4px ;
+    margin: 2px ;
 }
 
 
