@@ -1,4 +1,12 @@
+Things to complete before 0.2:
+    logging cleanup
+    scheduler stats structures cleanup
+    adminUp/adminDown host
+    'sticky' connections. keep a cache of 'client_ip':'backend_ip'. 
+    'weighted' hosts
+
 Things to complete before 0.1:
+    rename clients->hosts
     more doco
     write a client that compares config xml and running xml, and updates
       the latter to match the former. mostly there now, see compareconf
@@ -16,17 +24,26 @@ Admin interface bits left to do:
     [maybe] reload config, making changes
   Host mgmt:
     delAllHosts?service=NNN&group=NNN
-  group mgmt:
+  Group mgmt:
     changeScheduler?service=NNN&group=NNN&scheduler=NNN
-  service mgmt:
+  Service mgmt:
     newService?service=NNN&listen=NNN
     newGroup?service=NNN&group=NNN&scheduler=NNN
     delGroup?service=NNN&group=NNN
   other
     closeLog
     retryHost?service=NNN&group=NNN&client=NNN
-    mark a host as administratively up/down?
+    hostAdminDown
+    hostAdminUp
     [maybe] shutdown?
+
+multiple listeners for a service
+
+multiple admins for a pydir (e.g. one http, one https)
+
+make enable optional
+
+logging options?
 
 Document the various return results from the text mode interfaces - 
 eg running.txt
@@ -34,8 +51,6 @@ eg running.txt
 Experiment with andy dustman's C code replacement for asyncore.poll()
 
 additional schedulers.
-'sticky' connections. keep a cache of 'client_ip':'backend_ip'. 
-'weighted' hosts
 
 better testing stuff in SchedulerManager, rather than just dropping the
 dead entry back into the mix. In the case of "it's down", this is harmless,
@@ -52,9 +67,10 @@ specify users not in the config.xml file, but somewhere else.
 what does 'host unknown' raise under 2.1? 
 
 Clean up all the logging. Logging now goes to a single place, but in
-inconsistent format. Still, it's better.
+inconsistent format. Still, it's better than it was.
 
 Track the count of faults.
 
-If M2Crypto is installed, allow a https-based admin interface.
+If M2Crypto is installed, allow a https-based admin interface. Sort-of
+there now, use the undocumented 'secure="yes"' flag to the admin directive.
 
