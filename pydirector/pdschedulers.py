@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdschedulers.py,v 1.7 2002/07/23 01:43:03 anthonybaxter Exp $
+# $Id: pdschedulers.py,v 1.8 2002/11/26 03:45:38 anthonybaxter Exp $
 #
 
 import sys
@@ -130,7 +130,7 @@ class BaseScheduler:
         from time import time
         t,host = self.open[s_id]
         if host in self.hosts:
-            pdlogging.log("marking host %s down (%s)"%(str(host), reason), 
+            pdlogging.log("marking host %s down (%s)\n"%(str(host), reason), 
                             datestamp=1)
             self.hosts.remove(host)
         if self.openconns.has_key(host):

@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdlogging.py,v 1.4 2002/07/23 01:43:03 anthonybaxter Exp $
+# $Id: pdlogging.py,v 1.5 2002/11/26 03:45:38 anthonybaxter Exp $
 #
 
 Logger=None
@@ -29,7 +29,7 @@ class _LoggerClass:
 
     def log(self, message, datestamp=0):
         if datestamp:
-            self.fp.write("%s %s"%(self.log_date_time_string,message))
+            self.fp.write("%s %s"%(self.log_date_time_string(),message))
         else:
             self.fp.write(message)
         self.fp.flush()

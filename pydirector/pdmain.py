@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdmain.py,v 1.4 2002/07/08 00:41:56 anthonybaxter Exp $
+# $Id: pdmain.py,v 1.5 2002/11/26 03:45:38 anthonybaxter Exp $
 #
 
 import sys
@@ -21,13 +21,14 @@ class PythonDirector(object):
         self.createListeners()
 
     def start(self):
-        import asyncore, sys
+        import sys
         from pydirector import pdadmin
+	from pdnetwork import mainloop
         if self.conf.admin is not None:
             pdadmin.start(adminconf=self.conf.admin, director=self)
         self.manager.start()
         try:
-            asyncore.loop(timeout = 4)
+	    mainloop(timeout=4)
         except KeyboardInterrupt:
             sys.exit(0)
 
@@ -78,5 +79,5 @@ class PythonDirector(object):
         eg = serviceConf.getEnabledGroup()
         scheduler = self.getScheduler(serviceName, eg.name)
         for listener in self.listeners[serviceName]:
-            listener.scheduler = scheduler
+            listener.setScheduler(scheduler)
 
