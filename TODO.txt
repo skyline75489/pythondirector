@@ -31,14 +31,13 @@ eg running.txt
 Experiment with andy dustman's C code replacement for asyncore.poll()
 
 additional schedulers.
+'sticky' connections. keep a cache of 'client_ip':'backend_ip'. 
 
 better testing stuff in SchedulerManager, rather than just dropping the
 dead entry back into the mix. In the case of "it's down", this is harmless,
 but nonetheless.
 
 expires on the CSS.
-
-'sticky' connections. keep a cache of 'client_ip':'backend_ip'. 
 
 seriously refactor the CSS and also the pdadmin_running HTML. Nasty nasty.
 
@@ -48,4 +47,5 @@ specify users not in the config.xml file, but somewhere else.
 
 what does 'host unknown' raise under 2.1? 
 
-
+Clean up all the logging. Logging now goes to a single place, but in
+inconsistent format. Still, it's better.

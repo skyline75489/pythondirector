@@ -2,10 +2,12 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdnetwork.py,v 1.3 2002/07/01 06:51:00 anthonybaxter Exp $
+# $Id: pdnetwork.py,v 1.4 2002/07/01 08:52:22 anthonybaxter Exp $
 #   
 
 import asyncore, asynchat, socket, sys, errno
+
+import pdlogging
 
 #asyncore.DEBUG = 1
 
@@ -177,3 +179,11 @@ class Sender(asynchat.async_chat):
         self.receiver.close_when_done()
         self.scheduler.doneHost(self.receiver)
         self.close()
+
+    def log(self, message):
+        pdlogging.log(message)
+
+    def log_info (self, message, type='info'):
+        if __debug__ or type != 'info':
+            pdlogging.log('%s: %s' % (type, message))
+

@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdconf.py,v 1.2 2002/07/01 05:33:44 anthonybaxter Exp $
+# $Id: pdconf.py,v 1.3 2002/07/01 08:52:22 anthonybaxter Exp $
 #   
 
 import sys
@@ -125,7 +125,6 @@ class PDAdminUser(object):
             return 0
 
 
-
 class PDAdmin(object):
     __slots__ = [ 'listen', 'userdb' ]
     def __init__(self):
@@ -159,16 +158,19 @@ class PDConfig(object):
             raise ConfigError, "expected top level 'pdconfig'"
         for item in dom.childNodes:
             if item.nodeName == "#text": continue
-            if item.nodeName not in ( u'service', u'admin' ):
+            if item.nodeName not in ( u'service', u'admin', u'logging' ):
                 raise ConfigError, \
                     "expected 'service' or 'admin', got '%s'"%item.nodeName
             if item.nodeName == u'service':
                 self.loadService(item)
-            if item.nodeName == u'admin':
+            elif item.nodeName == u'admin':
                 if self.admin is None:
                     self.loadAdmin(item)
                 else:
                     raise ConfigError, "only one 'admin' block allowed"
+            elif item.nodeName == u'logging':
+                import pdlogging
+                pdlogging.initlog(item.getAttribute('file'))
 
     def _loadDOM(self, file):
         from xml.dom.minidom import parseString

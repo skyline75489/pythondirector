@@ -18,4 +18,5 @@
     <admin listen="localhost:7001">
 	<user name="fulluser" password="iy9l0V1MkG1DE" access="full"/>
     </admin>
+    <logging file="pydir.log"/>
 </pdconfig>

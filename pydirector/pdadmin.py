@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com) 
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdadmin.py,v 1.3 2002/07/01 05:47:11 anthonybaxter Exp $
+# $Id: pdadmin.py,v 1.4 2002/07/01 08:52:22 anthonybaxter Exp $
 #
 
 import sys
@@ -10,19 +10,26 @@ if sys.version_info < (2,2):
     class object: pass
 
 import threading, BaseHTTPServer, SocketServer, urlparse, re, urllib
-import socket, time, sys, traceback
+import socket, time, sys, traceback, time
 import micropubl
-from pydirector import Version
+from pydirector import Version, pdlogging
 
 def start(adminconf, director):
     AdminClass.director = director
     AdminClass.config = adminconf
     AdminClass.starttime = time.time()
-    SocketServer.ThreadingTCPServer.allow_reuse_address = 1
-    tcps = SocketServer.ThreadingTCPServer(adminconf.listen, AdminClass)
+    tcps = PDTCPServer(adminconf.listen, AdminClass)
     at = threading.Thread(target=tcps.serve_forever)
     at.setDaemon(1)
     at.start()
+
+class PDTCPServer(SocketServer.ThreadingTCPServer):
+    allow_reuse_address = 1
+    def handle_error(self, request, client_address):
+        "overridden from SocketServer.BaseServer"
+        nil, t, v, tbinfo = pdlogging.compact_traceback()
+        pdlogging.log("ADMIN(Exception) %s - %s: %s %s\n"%
+                (time.ctime(time.time()), t,v,tbinfo))
 
 class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher):
     server_version = "pythondirector/%s"%Version
@@ -46,7 +53,6 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
             return userObj
 
     def unauth(self, why):
-        print "auth failure", why
         self.send_response(401)
         self.send_header('WWW-Authenticate', 'basic realm="python director"')
         self.wfile.write("<p>Unauthorised</p>\n")
@@ -91,6 +97,12 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
         self.redir('/running?resultMessage=%s'%urllib.quote(mesg))
         
     def do_GET(self):
+        try:
+            self.do_request()
+        except:
+            self.log_exception()
+
+    def do_request(self):
         #print "URL",self.path
         h,p,u,p,q,f = urlparse.urlparse(self.path)
 
@@ -296,6 +308,20 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
             if bad:
                 for b in bad:
                     W("disabled: %s:%s\n"%b)
+
+    def log_message(self, format, *args):
+        "overridden from BaseHTTPServer"
+        pdlogging.log("ADMIN: %s - - [%s] %s\n" %
+                     (self.address_string(),
+                      self.log_date_time_string(),
+                      format%args))
+
+    def log_exception(self):
+        nil, t, v, tbinfo = pdlogging.compact_traceback()
+        pdlogging.log("ADMIN(Exception) %s - %s: %s %s\n"%
+                (time.ctime(time.time()), t,v,tbinfo))
+
+
 
 def dictify(q):
     """
