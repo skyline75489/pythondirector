@@ -1,9 +1,7 @@
 Things to complete before 0.1:
-    addUser
-    delUser
     more doco
     write a client that compares config xml and running xml, and updates
-    the latter to match the former. mostly there now, see compareconf
+      the latter to match the former. mostly there now, see compareconf
 
 Lots and lots more documentation
 
@@ -20,9 +18,6 @@ Admin interface bits left to do:
     delAllHosts?service=NNN&group=NNN
   group mgmt:
     changeScheduler?service=NNN&group=NNN&scheduler=NNN
-  user mgmt:
-    addUser?user=NNN&pass=NNN
-    delUser?user=NNN
   service mgmt:
     newService?service=NNN&listen=NNN
     newGroup?service=NNN&group=NNN&scheduler=NNN

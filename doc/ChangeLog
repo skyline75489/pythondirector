@@ -1,3 +1,13 @@
+2002-07-03 21:15  anthonybaxter
+
+	* pydirector/: pdadmin.py, pdconf.py: implemented addUser/delUser. 
+	hooked in basic SSL support (from M2Crypto) for the admin web
+	server.  Not entirely complete yet, but sort-of-works.
+
+2002-07-03 19:25  anthonybaxter
+
+	* doc/webapi.txt: add needed delGroup command
+
 2002-07-03 19:17  anthonybaxter
 
 	* pydirector/pdconf.py: der. fixed stupid typo.
@@ -17,10 +27,6 @@
 
 	* pydirector/compareconf.py: module to compare an old and new
 	config, and supply api calls to bring the old up to the new.
-
-2002-07-03 18:15  anthonybaxter
-
-	* TODO.txt: [no log message]
 
 2002-07-03 18:11  anthonybaxter
 
@@ -84,10 +90,6 @@
 
 	* README.txt: on to 0.0.3!
 
-2002-07-02 16:56  anthonybaxter
-
-	* doc/ChangeLog: [no log message]
-
 2002-07-02 16:55  anthonybaxter
 
 	* TODO.txt: delHost implemented.
@@ -149,10 +151,6 @@
 2002-07-01 15:51  anthonybaxter
 
 	* .cvsignore: more setup.py ignore
-
-2002-07-01 15:51  anthonybaxter
-
-	* doc/ChangeLog: [no log message]
 
 2002-07-01 15:51  anthonybaxter
 

@@ -1,3 +1,5 @@
+*.pem
+randpool.dat
 *.pyo
 *.pyc
 *.cover
