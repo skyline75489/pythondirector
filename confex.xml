@@ -1,0 +1,19 @@
+<pdconfig>
+    <service name="prod-ekit-http">
+	<listen ip="127.0.0.1:8000" />
+	<group name="main" scheduler="leastconns">
+	    <client name="two" ip="127.0.0.1:8002" />
+	    <client name="three" ip="127.0.0.1:8003" />
+	    <client name="four" ip="127.0.0.1:8004" />
+	</group>
+	<group name="upgrade" scheduler="leastconns">
+	    <client name="five" ip="127.0.0.1:8005" />
+	    <client name="six" ip="127.0.0.1:8006" />
+	    <client name="seven" ip="127.0.0.1:8007" />
+	</group>
+	<enable group="main" />
+    </service>
+    <admin listen="localhost:7001">
+	<user name="anthony" password="iy910VlMkG1DE" access="full"/>
+    </admin>
+</pdconfig>

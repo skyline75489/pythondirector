@@ -1,0 +1,33 @@
+
+
+Don't need asynchat any more - switch the Receiver and Sender to use
+asyncore.dispatcher, instead.
+
+Admin interface: 
+  Information:
+    config / config.txt 
+    running.xml
+  Host mgmt:
+    addHost
+    delHost
+    delAllHosts
+  group mgmt:
+    changeScheduler?service=NNN&group=NNN&scheduler=NNN
+  user mgmt:
+    ??
+  service mgmt:
+    ??
+  config management:
+    save?
+
+Document the various return results from the text mode interfaces - 
+eg running.txt
+
+Experiment with andy dustman's C code replacement for asyncore.poll()
+
+additional schedulers.
+
+better testing stuff in SchedulerManager, rather than just dropping the
+dead entry into the mix.
+
+expires on the CSS.
