@@ -95,6 +95,11 @@ Service management
   - newGroup?service=NNN&group=NNN&scheduler=NNN
 
       add a new group to a service. unimplemented.
+
+  - delGroup?service=NNN&group=NNN
+
+      remove a new group from a service. can't remove
+      the active group. unimplemented.
         
 Miscellaneous
 -------------
