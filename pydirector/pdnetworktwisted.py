@@ -4,7 +4,7 @@
 #
 # Networking core - twisted version (http://www.twistedmatrix.com)
 #
-# $Id: pdnetworktwisted.py,v 1.4 2003/04/30 06:03:50 anthonybaxter Exp $
+# $Id: pdnetworktwisted.py,v 1.5 2003/04/30 06:13:40 anthonybaxter Exp $
 #
 
 from twisted.internet.protocol import ServerFactory, ClientFactory, Protocol
@@ -123,7 +123,7 @@ class SenderFactory(ClientFactory):
             reactor.connectTCP(host, port, self)
         else:
             # No working servers!?
-            pdlogging.log("no working servers, manager -> aggressive\n", 
+            pdlogging.log("no working servers, manager -> aggressive\n",
                           datestamp=1)
             self.receiver.transport.loseConnection()
 

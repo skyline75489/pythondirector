@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdmanager.py,v 1.7 2003/04/30 06:05:04 anthonybaxter Exp $
+# $Id: pdmanager.py,v 1.8 2003/04/30 06:13:40 anthonybaxter Exp $
 #
 
 import sys
@@ -42,7 +42,7 @@ class SchedulerManager(object):
         badhosts = scheduler.badhosts
         hosts = badhosts.keys()
 
-        if not len(scheduler.hosts): 
+        if not len(scheduler.hosts):
             # All servers are down! Go into a more aggressive mode for
             # checking.
             forcecheck=1
