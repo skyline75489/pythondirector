@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #   
-# $Id: pdschedulers.py,v 1.4 2002/07/03 07:39:19 anthonybaxter Exp $
+# $Id: pdschedulers.py,v 1.5 2002/07/03 07:52:40 anthonybaxter Exp $
 #
 
 import sys
@@ -78,6 +78,8 @@ class BaseScheduler:
             self.open[s_id] = (time(),host)
             self.openconns[host] = cur+1
             return host
+	else:
+	    return None
 
     def getHostNames(self):
         return self.hostnames
@@ -148,12 +150,16 @@ class RandomScheduler(BaseScheduler):
         if self.hosts:
             pick = random.choice(self.hosts)
             return pick
+	else:
+	    return None
 
 class RoundRobinScheduler(BaseScheduler):
     schedulerName = "roundrobin"
     counter = 0
 
     def nextHost(self):
+	if not self.hosts:
+	    return None
         if self.counter >= len(self.hosts):
             self.counter = 0
         if self.hosts:
@@ -171,6 +177,8 @@ class LeastConnsScheduler(BaseScheduler):
     counter = 0
 
     def nextHost(self):
+	if not self.openconns.keys():
+	    return None
         hosts = [ (x[1],x[0]) for x in self.openconns.items() ]
         hosts.sort()
         return hosts[0][1]
