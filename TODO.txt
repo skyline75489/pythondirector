@@ -31,3 +31,5 @@ better testing stuff in SchedulerManager, rather than just dropping the
 dead entry into the mix.
 
 expires on the CSS.
+
+'sticky' connections. keep a cache of 'client_ip':'backend_ip'. easy :)
