@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdmanager.py,v 1.5 2002/07/23 01:43:03 anthonybaxter Exp $
+# $Id: pdmanager.py,v 1.6 2002/11/26 03:53:50 anthonybaxter Exp $
 #
 
 import sys
@@ -43,7 +43,7 @@ class SchedulerManager(object):
             now = time.time()
             when,what = badhosts[bh]
             if now > when + self.checktime:
-                pdlogging.log("re-adding %s automatically"%str(bh),
+                pdlogging.log("re-adding %s automatically\n"%str(bh),
                         datestamp=1)
                 name = scheduler.getHostNames()[bh]
                 del badhosts[bh]
