@@ -1,5 +1,4 @@
 
-
 Don't need asynchat any more - switch the Receiver and Sender to use
 asyncore.dispatcher, instead.
 
@@ -18,6 +17,7 @@ Admin interface:
     ??
   config management:
     save?
+  shutdown?
 
 Document the various return results from the text mode interfaces - 
 eg running.txt
@@ -34,3 +34,6 @@ expires on the CSS.
 'sticky' connections. keep a cache of 'client_ip':'backend_ip'. easy :)
 
 seriously refactor the CSS and also the pdadmin_running HTML. Nasty nasty.
+
+pid file?
+
