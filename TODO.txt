@@ -20,7 +20,10 @@ Admin interface bits left to do:
     ??
   config management:
     save?
-  shutdown?
+  other
+    shutdown?
+    explicitly mark a host as up
+    mark a host as administratively up/down
 
 Document the various return results from the text mode interfaces - 
 eg running.txt
@@ -41,4 +44,8 @@ seriously refactor the CSS and also the pdadmin_running HTML. Nasty nasty.
 
 pid file?
 
-setup.py stuff
+specify users not in the config.xml file, but somewhere else.
+
+what does 'host unknown' raise under 2.1? 
+
+
