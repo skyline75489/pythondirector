@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com) 
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdadmin.py,v 1.2 2002/07/01 05:33:44 anthonybaxter Exp $
+# $Id: pdadmin.py,v 1.3 2002/07/01 05:47:11 anthonybaxter Exp $
 #
 
 import sys
@@ -12,6 +12,7 @@ if sys.version_info < (2,2):
 import threading, BaseHTTPServer, SocketServer, urlparse, re, urllib
 import socket, time, sys, traceback
 import micropubl
+from pydirector import Version
 
 def start(adminconf, director):
     AdminClass.director = director
@@ -24,7 +25,7 @@ def start(adminconf, director):
     at.start()
 
 class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher):
-    server_version = "Pydir/0.01"
+    server_version = "pythondirector/%s"%Version
     director = None
     config = None
     starttime = None
