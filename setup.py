@@ -4,8 +4,8 @@ from distutils.core import setup
 from pydirector import Version
 
 setup(
-    name = "pydirector", 
-    version = Version, 
+    name = "pydirector",
+    version = Version,
     description = "Python Director - TCP load balancer.",
     author = "Anthony Baxter",
     author_email = "anthony@interlink.com.au",
@@ -13,4 +13,3 @@ setup(
     packages = ['pydirector'],
     scripts = ['pydir.py'],
 )
-

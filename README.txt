@@ -1,4 +1,4 @@
-README for pythondirector 0.0.4
+README for pythondirector 0.0.5
 
 This is a pure python TCP load balancer. It takes inbound TCP
 connections and connects them to one of a number of backend
