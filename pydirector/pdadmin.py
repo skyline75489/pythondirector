@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdadmin.py,v 1.11 2002/07/04 04:09:39 anthonybaxter Exp $
+# $Id: pdadmin.py,v 1.12 2002/07/08 00:41:56 anthonybaxter Exp $
 #
 
 import sys
@@ -219,10 +219,11 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
             serv = doc.createElement("service")
             serv.setAttribute('name', service.name)
             top.appendChild(serv)
-            serv.appendChild(doc.createTextNode("\n        "))
-            listen = doc.createElement("listen")
-            listen.setAttribute('ip', service.listen)
-            serv.appendChild(listen)
+            for l in service.listen:
+                serv.appendChild(doc.createTextNode("\n        "))
+                lobj = doc.createElement("listen")
+                lobj.setAttribute('ip', l)
+                serv.appendChild(lobj)
             groups = service.getGroups()
             for group in groups:
                 serv.appendChild(doc.createTextNode("\n        "))
@@ -287,7 +288,8 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
         conf = self.director.conf
         for service in conf.getServices():
             eg = service.getEnabledGroup()
-            W('service %s %s %s\n'%(service.name, service.listen, eg.name))
+            for l in service.listen:
+                W('service %s %s %s\n'%(service.name, l, eg.name))
             groups = service.getGroups()
             for group in groups:
                 sch = self.director.getScheduler(service.name, group.name)
@@ -331,7 +333,8 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
         for service in conf.getServices():
             W('<table><tr><th align="left" colspan="1">Service: %s</th></tr>\n'%
                                                         service.name)
-            W('<tr><td colspan="1">Listening on %s</td></tr>\n'%service.listen)
+            for l in service.listen:
+                W('<tr><td colspan="1">Listening on %s</td></tr>\n'%l)
             eg = service.getEnabledGroup()
             groups = service.getGroups()
             for group in groups:
@@ -443,6 +446,8 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
     def pdadmin_status_txt(self, verbose=0, Access='Read'):
         self.header(html=0)
         W = self.wfile.write
+        # needs to handle multiple listeners per service!
+        raise "Broken", "update me!"
         for listener in self.director.listeners.values():
             sch_stats = listener.scheduler.getStats(verbose='verbose')
             lh,lp = listener.listening_address

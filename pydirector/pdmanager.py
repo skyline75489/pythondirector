@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdmanager.py,v 1.3 2002/07/03 09:17:23 anthonybaxter Exp $
+# $Id: pdmanager.py,v 1.4 2002/07/08 00:41:56 anthonybaxter Exp $
 #
 
 import sys
@@ -27,7 +27,10 @@ class SchedulerManager(object):
         import time
         while 1:
             time.sleep(self.sleeptime)
-            for listener in self.director.listeners.values():
+            for listeners in self.director.listeners.values():
+                # since all listeners for a service share a scheduler,
+                # we only need to check the first listener.
+                listener = listeners[0]
                 scheduler = listener.scheduler
                 #print scheduler.showStats(verbose=0)
                 self.checkBadHosts(scheduler)

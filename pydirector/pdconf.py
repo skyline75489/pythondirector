@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdconf.py,v 1.9 2002/07/04 04:09:39 anthonybaxter Exp $
+# $Id: pdconf.py,v 1.10 2002/07/08 00:41:56 anthonybaxter Exp $
 #
 
 import sys
@@ -64,7 +64,7 @@ class PDService(object):
     def __init__(self, name):
         self.name = name
         self.groups = {}
-        self.listen = None
+        self.listen = []
         self.enabledgroup = None
 
     def loadGroup(self, groupobj):
@@ -230,7 +230,7 @@ class PDConfig(object):
         for c in service.childNodes:
             if c.nodeName == "#text": continue
             if c.nodeName == u'listen':
-                newService.listen = c.getAttribute('ip')
+                newService.listen.append(c.getAttribute('ip'))
             elif c.nodeName == u'group':
                 newService.loadGroup(c)
             elif c.nodeName == u'enable':

@@ -72,6 +72,7 @@ Admin interface:
 
 Changes from 0.0.3 to 0.0.4-notyet-done:
 
+- can now specify more than one listener for a service
 - 'client' in the config XML is now 'host'
 - fixed a bug in leastconns and roundrobin scheduler if all backends
   were unavailable.

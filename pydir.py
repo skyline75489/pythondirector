@@ -6,7 +6,7 @@ import sys
 
 def versionCheck():
     if not (hasattr(sys, 'version_info') and sys.version_info > (2,1)):
-	raise RuntimeError, "PythonDirector needs Python2.1 or greater"
+        raise RuntimeError, "PythonDirector needs Python2.1 or greater"
 
 def main():
     from pydirector.pdmain import PythonDirector
@@ -22,5 +22,5 @@ if __name__ == "__main__":
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pydir.py,v 1.5 2002/07/01 05:34:06 anthonybaxter Exp $
+# $Id: pydir.py,v 1.6 2002/07/08 00:41:56 anthonybaxter Exp $
 #   

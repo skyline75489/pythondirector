@@ -37,8 +37,6 @@ Admin interface bits left to do:
     hostAdminUp
     [maybe] shutdown?
 
-multiple listeners for a service
-
 multiple admins for a pydir (e.g. one http, one https)
 
 make enable optional

@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdmain.py,v 1.3 2002/07/03 09:17:23 anthonybaxter Exp $
+# $Id: pdmain.py,v 1.4 2002/07/08 00:41:56 anthonybaxter Exp $
 #
 
 import sys
@@ -54,10 +54,13 @@ class PythonDirector(object):
             self.createSchedulers(service)
             eg = service.getEnabledGroup()
             scheduler = self.getScheduler(service.name, eg.name)
-            l = pdnetwork.Listener(service.name,
-                                   pdconf.splitHostPort(service.listen),
+            # handle multiple listeners for a service
+            self.listeners[service.name] = []
+            for lobj in service.listen:
+                l = pdnetwork.Listener(service.name,
+                                   pdconf.splitHostPort(lobj),
                                    scheduler)
-            self.listeners[service.name] = l
+                self.listeners[service.name].append(l)
 
     def enableGroup(self, serviceName, groupName):
         serviceConf = self.conf.getService(serviceName)
@@ -74,4 +77,6 @@ class PythonDirector(object):
         serviceConf = self.conf.getService(serviceName)
         eg = serviceConf.getEnabledGroup()
         scheduler = self.getScheduler(serviceName, eg.name)
-        self.listeners[serviceName].scheduler = scheduler
+        for listener in self.listeners[serviceName]:
+            listener.scheduler = scheduler
+
