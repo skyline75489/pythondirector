@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdconf.py,v 1.6 2002/07/03 09:17:23 anthonybaxter Exp $
+# $Id: pdconf.py,v 1.7 2002/07/03 09:17:54 anthonybaxter Exp $
 #
 
 import sys
@@ -178,7 +178,7 @@ class PDConfig(object):
     def _loadDOM(self, filename, xml):
         from xml.dom.minidom import parseString
         if filename is not None:
-            xml = open(file).read()
+            xml = open(filename).read()
         elif xml is None:
             raise ConfigError, "need filename or xml"
         self.dom = parseString(xml)
