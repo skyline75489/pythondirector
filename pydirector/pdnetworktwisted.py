@@ -4,7 +4,7 @@
 #
 # Networking core - twisted version (http://www.twistedmatrix.com)
 #
-# $Id: pdnetworktwisted.py,v 1.2 2002/11/26 03:45:38 anthonybaxter Exp $
+# $Id: pdnetworktwisted.py,v 1.3 2002/11/26 05:50:54 anthonybaxter Exp $
 #
 
 from twisted.internet.protocol import ServerFactory, ClientFactory, Protocol
@@ -30,15 +30,15 @@ class Listener:
         self.name = name
         self.listening_address = (bindhost, bindport)
         self.setScheduler(scheduler)
-        reactor.listenTCP(bindport, 
-                          ReceiverFactory((bindhost,bindport), scheduler), 
+        reactor.listenTCP(bindport,
+                          ReceiverFactory((bindhost,bindport), scheduler),
                           interface=bindhost)
 
     def setScheduler(self, scheduler):
         self.scheduler = scheduler
-        # also change our ReceiverFactory!! XXX TODO 
+        # also change our ReceiverFactory!! XXX TODO
 
-class Sender(Protocol): 
+class Sender(Protocol):
     """
         A Sender object connects to the remote final server, and passes data
         back and forth. Unlike the receiver, it's not necessary to buffer up
@@ -82,7 +82,7 @@ class Sender(Protocol):
             self.receiver.setSender(self)
         else:
             # the receiver's already given up at this point and gone
-            # home. _if_ the receiver got data from the client, we 
+            # home. _if_ the receiver got data from the client, we
             # must send it on - the client thinks that it's successfully
             # sent it, so we should honour that. We don't need to worry
             # about the response from the server itself.
@@ -92,7 +92,7 @@ class Sender(Protocol):
             self.transport.loseConnection()
             self.setReceiver(None)
 
-class SenderFactory(ClientFactory): 
+class SenderFactory(ClientFactory):
     "create a Sender when needed. The sender connects to the remote host"
     protocol = Sender
     noisy = 0
@@ -170,7 +170,7 @@ class Receiver(Protocol):
             # after this, and you end up with a hosed receiver that's hanging
             # around.
             self.receiverOk = 0
-            
+
     def getBuffer(self):
         "return any buffered data"
         return self.buffer
@@ -183,7 +183,7 @@ class Receiver(Protocol):
             self.buffer += data
 
 
-class ReceiverFactory(ServerFactory): 
+class ReceiverFactory(ServerFactory):
     "Factory for the listener bit of the pydirector"
     protocol = Receiver
     noisy = 0

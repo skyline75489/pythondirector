@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdadmin.py,v 1.13 2002/07/17 04:53:52 anthonybaxter Exp $
+# $Id: pdadmin.py,v 1.14 2002/11/26 05:50:54 anthonybaxter Exp $
 #
 
 import sys
@@ -15,7 +15,7 @@ import micropubl
 from pydirector import Version, pdlogging
 
 try:
-    from M2Crypto import SSL 
+    from M2Crypto import SSL
 except ImportError:
     SSL = None
 
@@ -39,7 +39,7 @@ class PDTCPServerBase:
         pdlogging.log("ADMIN(Exception) %s - %s: %s %s\n"%
                 (time.ctime(time.time()), t,v,tbinfo))
 
-class PDTCPServer(SocketServer.ThreadingTCPServer, PDTCPServerBase): 
+class PDTCPServer(SocketServer.ThreadingTCPServer, PDTCPServerBase):
     allow_reuse_address = 1
 
 if SSL is not None:
@@ -467,7 +467,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
         if self.adminconf.getUser(name):
             self.action_done('user %s already exists'%name)
             self.wfile.write("NOT OK\n")
-        else: 
+        else:
             self.adminconf.addUser(name, password, access)
             self.action_done('user %s added'%name)
             self.wfile.write("OK\n")
@@ -477,7 +477,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
             self.adminconf.delUser(name)
             self.action_done('user %s deleted'%name)
             self.wfile.write("OK\n")
-        else: 
+        else:
             self.action_done('user %s not found'%name)
             self.wfile.write("NOT OK\n")
 
