@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdconf.py,v 1.7 2002/07/03 09:17:54 anthonybaxter Exp $
+# $Id: pdconf.py,v 1.8 2002/07/03 11:15:34 anthonybaxter Exp $
 #
 
 import sys
@@ -126,7 +126,7 @@ class PDAdminUser(object):
 
 
 class PDAdmin(object):
-    __slots__ = [ 'listen', 'userdb' ]
+    __slots__ = [ 'listen', 'userdb', 'secure' ]
     def __init__(self):
         self.listen = None
         self.userdb = {}
@@ -143,6 +143,13 @@ class PDAdmin(object):
         u.password = password
         u.access = access
         self.userdb[name] = u
+
+    def delUser(self, name):
+        if self.userdb.has_key(name):
+            del self.userdb[name]
+            return 1
+        else:
+            return 0
 
     def getUsers(self):
         return self.userdb.values()
@@ -187,6 +194,8 @@ class PDConfig(object):
     def loadAdmin(self, admin):
         adminServer = PDAdmin()
         adminServer.listen = splitHostPort(admin.getAttribute('listen'))
+        if admin.hasAttribute('secure'):
+            adminServer.secure = admin.getAttribute('secure')
         for user in admin.childNodes:
             if user.nodeName == "#text": continue
             if user.nodeName == u'user':

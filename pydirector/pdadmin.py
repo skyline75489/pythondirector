@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdadmin.py,v 1.9 2002/07/03 09:17:23 anthonybaxter Exp $
+# $Id: pdadmin.py,v 1.10 2002/07/03 11:15:34 anthonybaxter Exp $
 #
 
 import sys
@@ -14,22 +14,67 @@ import socket, time, sys, traceback, time
 import micropubl
 from pydirector import Version, pdlogging
 
+try:
+    from M2Crypto import SSL 
+except ImportError:
+    SSL = None
+
 def start(adminconf, director):
     AdminClass.director = director
     AdminClass.config = adminconf
     AdminClass.starttime = time.time()
-    tcps = PDTCPServer(adminconf.listen, AdminClass)
+    if adminconf.secure == 'yes' and SSL is not None:
+        tcps = PDTCPServerSSL(adminconf.listen, AdminClass, get_ssl_context())
+    else:
+        tcps = PDTCPServer(adminconf.listen, AdminClass)
     at = threading.Thread(target=tcps.serve_forever)
     at.setDaemon(1)
     at.start()
 
-class PDTCPServer(SocketServer.ThreadingTCPServer):
+class PDTCPServerBase:
     allow_reuse_address = 1
     def handle_error(self, request, client_address):
         "overridden from SocketServer.BaseServer"
         nil, t, v, tbinfo = pdlogging.compact_traceback()
         pdlogging.log("ADMIN(Exception) %s - %s: %s %s\n"%
                 (time.ctime(time.time()), t,v,tbinfo))
+
+class PDTCPServer(SocketServer.ThreadingTCPServer, PDTCPServerBase): pass
+
+if SSL is not None:
+    class PDTCPServerSSL(SSL.ThreadingSSLServer, PDTCPServerBase):
+        def __init__(self, server_addr, handler, ssl_ctx):
+            SSL.ThreadingSSLServer.__init__(self, server_addr, handler, ssl_ctx)
+            self.server_name = server_addr[0]
+            self.server_port = server_addr[1]
+
+        def finish(self):
+            self.request.set_shutdown(SSL.SSL_RECEIVED_SHUTDOWN | SSL.SSL_SENT_SHUTDOWN)
+            self.request.close()
+
+def get_ssl_context():
+    from M2Crypto import Rand
+    Rand.load_file('randpool.dat', -1)
+    ctx = init_context('sslv23', 'server.pem', 'ca.pem', \
+        SSL.verify_none)
+        #SSL.verify_peer | SSL.verify_fail_if_no_peer_cert)
+    ctx.set_tmp_dh('dh1024.pem')
+    Rand.save_file('randpool.dat')
+    return ctx
+
+
+def init_context(protocol, certfile, cafile, verify, verify_depth=10):
+    ctx=SSL.Context(protocol)
+    ctx.load_cert(certfile)
+    ctx.load_client_ca(cafile)
+    ctx.load_verify_info(cafile)
+    ctx.set_verify(verify, verify_depth)
+    ctx.set_allow_unknown_ca(1)
+    ctx.set_session_id_ctx('https_srv')
+    ctx.set_info_callback()
+    return ctx
+
+
 
 class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher):
     server_version = "pythondirector/%s"%Version
@@ -410,6 +455,28 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
             if bad:
                 for b in bad:
                     W("disabled: %s:%s\n"%b)
+
+    def pdadmin_addUser(self, name, password, access, Access='Write'):
+        if self.adminconf.getUser(name):
+            self.action_done('user %s already exists'%name)
+            self.wfile.write("NOT OK\n")
+        else: 
+            self.adminconf.addUser(name, password, access)
+            self.action_done('user %s added'%name)
+            self.wfile.write("OK\n")
+
+    def pdadmin_delUser(self, name, Access='Write'):
+        if self.adminconf.getUser(name):
+            self.adminconf.delUser(name)
+            self.action_done('user %s deleted'%name)
+            self.wfile.write("OK\n")
+        else: 
+            self.action_done('user %s not found'%name)
+            self.wfile.write("NOT OK\n")
+
+    def pdadmin_unimplemented(self, Access='Write'):
+        self.action_done('not implemented yet')
+        self.wfile.write("OK\n")
 
     def log_message(self, format, *args):
         "overridden from BaseHTTPServer"
