@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdschedulers.py,v 1.12 2003/04/30 08:41:54 anthonybaxter Exp $
+# $Id: pdschedulers.py,v 1.13 2003/05/01 04:26:33 anthonybaxter Exp $
 #
 
 import sys
@@ -164,7 +164,6 @@ class RoundRobinScheduler(BaseScheduler):
     counter = 0
 
     def nextHost(self, client_addr):
-	print "client is ", client_addr
         if not self.hosts:
             return None
         if self.counter >= len(self.hosts):
