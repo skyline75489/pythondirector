@@ -32,8 +32,6 @@ Admin interface bits left to do:
     mark a host as administratively up/down?
     [maybe] shutdown?
 
-add a 'autorefresh' to /running
-
 Document the various return results from the text mode interfaces - 
 eg running.txt
 
@@ -63,3 +61,4 @@ inconsistent format. Still, it's better.
 Track the count of faults.
 
 If M2Crypto is installed, allow a https-based admin interface.
+
