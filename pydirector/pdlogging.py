@@ -1,8 +1,8 @@
 #
-# Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
+# Copyright (c) 2002-2003 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdlogging.py,v 1.5 2002/11/26 03:45:38 anthonybaxter Exp $
+# $Id: pdlogging.py,v 1.6 2003/10/09 08:53:42 anthonybaxter Exp $
 #
 
 Logger=None

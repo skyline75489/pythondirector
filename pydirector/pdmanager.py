@@ -1,8 +1,8 @@
 #
-# Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
+# Copyright (c) 2002-2003 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdmanager.py,v 1.8 2003/04/30 06:13:40 anthonybaxter Exp $
+# $Id: pdmanager.py,v 1.9 2003/10/09 08:53:42 anthonybaxter Exp $
 #
 
 import sys

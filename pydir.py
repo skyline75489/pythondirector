@@ -20,8 +20,8 @@ if __name__ == "__main__":
     main()
 
 #
-# Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
+# Copyright (c) 2002-2003 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pydir.py,v 1.9 2003/04/30 08:24:35 anthonybaxter Exp $
+# $Id: pydir.py,v 1.10 2003/10/09 08:53:42 anthonybaxter Exp $
 #
