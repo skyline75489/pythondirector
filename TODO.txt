@@ -6,7 +6,6 @@ Things to complete before 0.2:
     'weighted' hosts
 
 Things to complete before 0.1:
-    rename clients->hosts
     more doco
     write a client that compares config xml and running xml, and updates
       the latter to match the former. mostly there now, see compareconf

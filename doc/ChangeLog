@@ -1,3 +1,29 @@
+2002-07-08 10:53  anthonybaxter
+
+	* README.txt, pydirector/__init__.py: 0.0.4 release
+
+2002-07-08 10:41  anthonybaxter
+
+	* README.txt, TODO.txt, pydir.py, pydirector/pdadmin.py,
+	pydirector/pdconf.py, pydirector/pdmain.py,
+	pydirector/pdmanager.py: support multiple listen directives for a
+	service.
+
+2002-07-08 10:37  anthonybaxter
+
+	* TODO.txt: async C module notes, upgrade ideas
+
+2002-07-08 10:32  anthonybaxter
+
+	* doc/: configure.txt, pythondirector.dtd, xmlreference.txt: can
+	now specify more than one 'listen' directive. update documentation.
+
+2002-07-04 18:23  anthonybaxter
+
+	* confex.xml, doc/configure.txt, doc/pythondirector.dtd,
+	doc/webapi.txt, doc/xmlreference.txt: document the <client> ->
+	<host> change.
+
 2002-07-04 14:09  anthonybaxter
 
 	* pydirector/: pdadmin.py, pdconf.py: renamed 'client' to 'host' in
