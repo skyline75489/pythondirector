@@ -1,0 +1,105 @@
+2002-07-01 15:49  anthonybaxter
+
+	* TODO.txt: more notes to self.
+
+2002-07-01 15:47  anthonybaxter
+
+	* .cvsignore: setup.py stuff
+
+2002-07-01 15:47  anthonybaxter
+
+	* MANIFEST.in: added setup.py input file.
+
+2002-07-01 15:47  anthonybaxter
+
+	* pydirector/: __init__.py, pdadmin.py: moved version to package
+	top.
+
+2002-07-01 15:44  anthonybaxter
+
+	* doc/: ChangeLog.preSF, OldChangelog.txt: renamed
+
+2002-07-01 15:40  anthonybaxter
+
+	* setup.py: simple setup.py
+
+2002-07-01 15:34  anthonybaxter
+
+	* pydir.py: python2.1 compat fixes.
+
+2002-07-01 15:33  anthonybaxter
+
+	* pydirector/: __init__.py, micropubl.py, pdadmin.py, pdconf.py,
+	pdmain.py, pdnetwork.py: Py2.1 compatibility fixes.
+
+2002-07-01 15:33  anthonybaxter
+
+	* pydirector/pdschedulers.py: renamed getHosts to getHostNames. 
+	Made py2.1 compat.
+
+2002-07-01 15:30  anthonybaxter
+
+	* pydirector/pdmanager.py: made the pdmanager bad host re-add work
+	again (woops!)
+
+2002-07-01 15:05  anthonybaxter
+
+	* pydir.py, pydirector/pdmain.py: broke main driver object off into
+	seperate pdmain module. driver is now trivial.
+
+2002-07-01 14:59  anthonybaxter
+
+	* TODO.txt, micropubl.py, pdadmin.py, pdconf.py, pdmanager.py,
+	pdnetwork.py, pdschedulers.py, pydir.py, pydirector/.cvsignore,
+	pydirector/__init__.py, pydirector/micropubl.py,
+	pydirector/pdadmin.py, pydirector/pdconf.py,
+	pydirector/pdmanager.py, pydirector/pdnetwork.py,
+	pydirector/pdschedulers.py: Packaged up the code. Everything but
+	'pydir.py' is now in the pydirector package.
+
+2002-07-01 13:38  anthonybaxter
+
+	* confex.xml: add *(documentation).
+
+2002-07-01 13:28  anthonybaxter
+
+	* TODO.txt: should there be a shutdown mode in the web interface?
+
+2002-07-01 13:22  anthonybaxter
+
+	* micropubl.py, pdadmin.py, pdconf.py, pdmanager.py,
+	doc/balance.fig: big refactoring of the web interface. using a tiny
+	publisher mixin (babybobo, or micropublisher) to extract args and
+	do that sort of magic. not completely happy with it for now, but
+	it's Good Enough for now.
+
+2002-06-25 14:00  anthonybaxter
+
+	* TODO.txt, pdadmin.py, pdschedulers.py, pydir.py: addHost works.
+	added a whole lotta CSS guff. running is now pretty with form bits
+	and stuff.
+
+2002-06-21 16:39  anthonybaxter
+
+	* TODO.txt: note adding sticky schedulers.
+
+2002-06-21 14:18  anthonybaxter
+
+	* confex.xml: made the username more .. sample-ish.
+
+2002-06-21 13:56  anthonybaxter
+
+	* .cvsignore: sssh.
+
+2002-06-21 13:54  anthonybaxter
+
+	* README.txt, TODO.txt, confex.xml, pdadmin.py, pdconf.py,
+	pdmanager.py, pdnetwork.py, pdschedulers.py, pydir.py,
+	doc/ChangeLog.preSF, doc/LICENSE.txt: Initial revision
+
+2002-06-21 13:54  anthonybaxter
+
+	* README.txt, TODO.txt, confex.xml, pdadmin.py, pdconf.py,
+	pdmanager.py, pdnetwork.py, pdschedulers.py, pydir.py,
+	doc/ChangeLog.preSF, doc/LICENSE.txt: Initial SF checkin.
+
