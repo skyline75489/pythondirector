@@ -3,7 +3,7 @@
 <!-- 
      I need to remember how to do DTD magic to make sure this is 
      actually doing all the stuff it can do. 
-$Id: pythondirector.dtd,v 1.1 2002/07/03 00:49:13 anthonybaxter Exp $
+$Id: pythondirector.dtd,v 1.2 2002/07/04 08:23:49 anthonybaxter Exp $
 -->
 
 <!ELEMENT pdconfig (service+, admin, logging)>
@@ -14,12 +14,12 @@ $Id: pythondirector.dtd,v 1.1 2002/07/03 00:49:13 anthonybaxter Exp $
 <!ELEMENT listen EMPTY>
 <!ATTLIST listen ip CDATA #REQUIRED>
 
-<!ELEMENT group (client*)>
+<!ELEMENT group (host*)>
 <!ATTLIST group name      CDATA #REQUIRED
                 scheduler (random|roundrobin|leastconns) #REQUIRED>
 
-<!ELEMENT client>
-<!ATTLIST client name CDATA #REQUIRED
+<!ELEMENT host>
+<!ATTLIST host name CDATA #REQUIRED
                  ip CDATA #REQUIRED>
 
 <!ELEMENT enable EMPTY>

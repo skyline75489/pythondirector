@@ -43,11 +43,11 @@ A Python Director config consists of a number of XML directives.
     scheduler - name of the scheduler to use for this group. Full list in
         doc/schedulers.txt 
   Children:
-    Should contain one or more <client> nodes.
+    Should contain one or more <host> nodes.
   Other notes:
     None
 
-<client> - a backend server
+<host> - a backend server
   Child of: <group>
   Attributes:
     name - name of this host
@@ -55,7 +55,8 @@ A Python Director config consists of a number of XML directives.
   Children:
     No children.
   Other notes:
-    This needs to be renamed. Really. Should be <host>
+    This used to be called <client>. Should be no references to the old
+    name left anywhere.
 
 <enable> - specifies the enabled group
   Child of: <service>

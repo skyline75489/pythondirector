@@ -108,7 +108,7 @@ Miscellaneous
 
       close and re-open the log file. unimplemented.
 
-  - retryHost?service=NNN&group=NNN&client=NNN
+  - retryHost?service=NNN&group=NNN&host=NNN
 
       force the manager thread to re-add a host now. unimplemented.
 

@@ -14,8 +14,8 @@ One of the simplest possible configs would be
       <service name="web">
         <listen ip="0.0.0.0:80"/>
         <group name="servers" scheduler="roundrobin">
-          <client name="server1" ip="192.168.10.1:80"/>
-          <client name="server2" ip="192.168.10.2:80"/>
+          <host name="server1" ip="192.168.10.1:80"/>
+          <host name="server2" ip="192.168.10.2:80"/>
         </group>
         <enable group="servers"/>
       </service>
