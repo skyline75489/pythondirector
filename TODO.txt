@@ -15,7 +15,7 @@ Things to complete before 0.1:
       implementations.
 
 Things to complete before 0.0.7:
-    DNS lookups
+    Caching of DNS lookups
     dump out curBadHosts/histBadHosts/open
     make the conn checker work
     'sticky' connections. keep a cache of 'client_ip':'backend_ip'. 
@@ -48,10 +48,6 @@ Admin interface bits left to do:
     hostAdminUp
     [maybe] shutdown?
 
-side-effect of leastconns on systems without constant load -
-sort (count, name) means that servers starting with 'a' get
-a lot more hits than ones starting with 'z'.
-
 multiple admins for a pydir (e.g. one http, one https)
 
 make enable optional
@@ -60,10 +56,6 @@ logging options?
 
 Document the various return results from the text mode interfaces - 
 eg running.txt
-
-Experiment with andy dustman's C code replacement for asyncore.poll(). 
-Initial experiments show it's bit rotted a bit - will have to find round
-tuits later.
 
 additional schedulers.
 
