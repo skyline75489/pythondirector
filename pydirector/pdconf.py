@@ -1,7 +1,13 @@
 #   
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
+#
+# $Id: pdconf.py,v 1.2 2002/07/01 05:33:44 anthonybaxter Exp $
 #   
+
+import sys
+if sys.version_info < (2,2):
+    class object: pass
 
 def getDefaultArgs(methodObj):
     import inspect

@@ -2,6 +2,13 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com) 
 # and Anthony Baxter <anthony@interlink.com.au>
 #
+# $Id: pdadmin.py,v 1.2 2002/07/01 05:33:44 anthonybaxter Exp $
+#
+
+import sys
+if sys.version_info < (2,2):
+    class object: pass
+
 import threading, BaseHTTPServer, SocketServer, urlparse, re, urllib
 import socket, time, sys, traceback
 import micropubl
@@ -188,7 +195,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
             for group in groups:
                 sch = self.director.getScheduler(service.name, group.name)
                 stats = sch.getStats(verbose=verbose)
-                hdict = sch.getHosts()
+                hdict = sch.getHostNames()
                 if group is eg:
                     klass = 'enabled'
                 else:
@@ -233,7 +240,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
                 if bad:
                     W('''<tr class="%s"><th colspan="2">disabled hosts</th>
                          <th>why</th><th>when</th></tr>\n'''%klass)
-                for k in bad:
+                for k in bad.keys():
                     host = '%s:%s'%k
                     W('<tr class="%s"><td>'%klass)
                     W("%s</td><td><tt>%s</tt></td>\n"%(hdict[host], host)) # XXXX
