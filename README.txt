@@ -30,6 +30,9 @@ Admin interface:
   config.xml - 
     initial config of the PD (xml)
 
+  running.xml
+    current running config of the PD (xml)
+
   Host mgmt:
     addHost?service=NNN&group=NNN&ip=NNN:n -
         add a new host to the group of a service
