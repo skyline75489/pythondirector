@@ -41,6 +41,7 @@ Experiment with andy dustman's C code replacement for asyncore.poll()
 
 additional schedulers.
 'sticky' connections. keep a cache of 'client_ip':'backend_ip'. 
+'weighted' hosts
 
 better testing stuff in SchedulerManager, rather than just dropping the
 dead entry back into the mix. In the case of "it's down", this is harmless,
@@ -60,3 +61,5 @@ Clean up all the logging. Logging now goes to a single place, but in
 inconsistent format. Still, it's better.
 
 Track the count of faults.
+
+If M2Crypto is installed, allow a https-based admin interface.
