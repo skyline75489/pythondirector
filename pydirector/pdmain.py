@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdmain.py,v 1.6 2002/11/26 05:50:54 anthonybaxter Exp $
+# $Id: pdmain.py,v 1.7 2003/04/30 06:01:29 anthonybaxter Exp $
 #
 
 import sys
@@ -35,7 +35,7 @@ class PythonDirector(object):
     def createManager(self):
         from pydirector import pdmanager
         import threading
-        manager = pdmanager.SchedulerManager(self, sleeptime=30)
+        manager = pdmanager.SchedulerManager(self)
         mt = threading.Thread(target=manager.mainloop)
         mt.setDaemon(1)
         self.manager = mt
