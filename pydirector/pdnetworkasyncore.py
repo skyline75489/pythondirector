@@ -4,7 +4,7 @@
 #
 # Networking core - asyncore version
 #
-# $Id: pdnetworkasyncore.py,v 1.3 2003/04/30 08:41:54 anthonybaxter Exp $
+# $Id: pdnetworkasyncore.py,v 1.4 2003/05/01 04:28:35 anthonybaxter Exp $
 #
 
 import asyncore, asynchat, socket, sys, errno
@@ -59,7 +59,7 @@ class Receiver(asynchat.async_chat):
         self.set_terminator(None)
         self.listener = listener
         self.id = id(self)
-	self.client_addr = addr
+        self.client_addr = addr
         self.sender = Sender(self, scheduler)
         self.sender.id = self.id
         self.scheduler = scheduler

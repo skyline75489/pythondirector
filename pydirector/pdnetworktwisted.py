@@ -4,7 +4,7 @@
 #
 # Networking core - twisted version (http://www.twistedmatrix.com)
 #
-# $Id: pdnetworktwisted.py,v 1.7 2003/04/30 08:41:54 anthonybaxter Exp $
+# $Id: pdnetworktwisted.py,v 1.8 2003/05/01 04:28:35 anthonybaxter Exp $
 #
 
 from twisted.internet.protocol import ServerFactory, ClientFactory, Protocol
@@ -116,8 +116,8 @@ class SenderFactory(ClientFactory):
         # this would hang up the inbound. We don't want that.
         #self.receiver.transport.loseConnection()
         self.receiver.factory.scheduler.deadHost(self, reason)
-        next =  self.receiver.factory.scheduler.getHost(self, 
-						    self.receiver.client_addr)
+        next =  self.receiver.factory.scheduler.getHost(self,
+                                                    self.receiver.client_addr)
         if next:
             pdlogging.log("retrying with %s\n"%repr(next), datestamp=1)
             host, port = next
@@ -141,7 +141,7 @@ class Receiver(Protocol):
     def connectionMade(self):
         "This is invoked when a client connects to the director"
         self.receiverOk = 1
-	self.client_addr = self.transport.client
+        self.client_addr = self.transport.client
         sender = SenderFactory()
         sender.setReceiver(self)
         dest = self.factory.scheduler.getHost(sender, self.client_addr)

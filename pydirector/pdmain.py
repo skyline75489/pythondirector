@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdmain.py,v 1.8 2003/04/30 08:24:37 anthonybaxter Exp $
+# $Id: pdmain.py,v 1.9 2003/05/01 04:28:35 anthonybaxter Exp $
 #
 
 import sys
@@ -28,17 +28,17 @@ class PythonDirector(object):
             pdadmin.start(adminconf=self.conf.admin, director=self)
         self.manager.start()
         try:
-	    if profile:
-		import hotshot
-		print "creating profiling log"
-		prof = hotshot.Profile("pydir.prof")
-		try:
-		    prof.runcall(mainloop)
-		finally:
-		    print "closing profile log"
-		    prof.close()
-	    else:
-		mainloop(timeout=4)
+            if profile:
+                import hotshot
+                print "creating profiling log"
+                prof = hotshot.Profile("pydir.prof")
+                try:
+                    prof.runcall(mainloop)
+                finally:
+                    print "closing profile log"
+                    prof.close()
+            else:
+                mainloop(timeout=4)
         except KeyboardInterrupt:
             sys.exit(0)
 
