@@ -3,6 +3,7 @@
 *.cover
 build
 dist
+MANIFEST
 pychecker.out
 index.html*
 testbed
