@@ -1,5 +1,5 @@
 recursive-include pydirector *.py
-recursive-include doc *.txt *.fig
+recursive-include doc *.txt *.fig *.dtd
 include doc/ChangeLog
 include *.txt *.py
 include confex.xml
