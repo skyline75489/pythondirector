@@ -1,6 +1,6 @@
-<!-- This is a sample configuration file! see doc/configure.txt for
-     more information -->
 <pdconfig>
+    <!-- This is a sample configuration file! see doc/configure.txt for
+         more information -->
     <service name="prod-http">
 	<listen ip="127.0.0.1:8000" />
 	<group name="main" scheduler="leastconns">
