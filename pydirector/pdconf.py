@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdconf.py,v 1.10 2002/07/08 00:41:56 anthonybaxter Exp $
+# $Id: pdconf.py,v 1.11 2003/04/30 06:04:23 anthonybaxter Exp $
 #
 
 import sys
@@ -176,7 +176,8 @@ class PDConfig(object):
         self.admin = None
         dom = self._loadDOM(filename, xml)
         if dom.nodeName != 'pdconfig':
-            raise ConfigError, "expected top level 'pdconfig'"
+            raise ConfigError, "expected top level 'pdconfig', got '%s'"%(
+                                                                dom.nodeName)
         for item in dom.childNodes:
             if item.nodeName == "#text": continue
             if item.nodeName not in ( u'service', u'admin', u'logging' ):
@@ -235,6 +236,8 @@ class PDConfig(object):
                 newService.loadGroup(c)
             elif c.nodeName == u'enable':
                 newService.enabledgroup = c.getAttribute('group')
+            elif c.nodeName == "#comment":
+                continue
             else:
                 raise ConfigError, "unknown node '%s'"%c.nodeName
         newService.checkSanity()
