@@ -1,5 +1,4 @@
 Things to complete before 0.1:
-   delHost
    addUser
    delUser
    doco? 
@@ -18,7 +17,6 @@ Admin interface bits left to do:
     [maybe] config vs. running
     [maybe] reload config, making changes
   Host mgmt:
-    delHost?service=NNN&group=NNN&client=NNN
     delAllHosts?service=NNN&group=NNN
   group mgmt:
     changeScheduler?service=NNN&group=NNN&scheduler=NNN
