@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdconf.py,v 1.3 2002/07/01 08:52:22 anthonybaxter Exp $
+# $Id: pdconf.py,v 1.4 2002/07/02 05:57:14 anthonybaxter Exp $
 #   
 
 import sys
@@ -143,6 +143,9 @@ class PDAdmin(object):
         u.password = password
         u.access = access
         self.userdb[name] = u
+
+    def getUsers(self):
+        return self.userdb.values()
 
     def getUser(self, name):
         return self.userdb.get(name)
