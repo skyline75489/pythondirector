@@ -7,23 +7,25 @@ asyncore.dispatcher, instead.
 Admin interface bits left to do:
 
   Information:
-    config / config.txt 
-    running.xml
+    [maybe] config / config.txt ?
+    [maybe] config vs. running
+    [maybe] reload config, making changes
   Host mgmt:
-    delHost
-    delAllHosts
+    delHost?service=NNN&group=NNN&client=NNN
+    delAllHosts?service=NNN&group=NNN
   group mgmt:
     changeScheduler?service=NNN&group=NNN&scheduler=NNN
   user mgmt:
-    ??
+    addUser?user=NNN&pass=NNN
+    delUser?user=NNN
   service mgmt:
-    ??
-  config management:
-    save?
+    newService?service=NNN&listen=NNN
+    newGroup?service=NNN&group=NNN&scheduler=NNN
   other
-    shutdown?
-    explicitly mark a host as up
-    mark a host as administratively up/down
+    closeLog
+    retryHost?service=NNN&group=NNN&client=NNN
+    mark a host as administratively up/down?
+    [maybe] shutdown?
 
 Document the various return results from the text mode interfaces - 
 eg running.txt
