@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdconf.py,v 1.13 2003/04/30 06:35:31 anthonybaxter Exp $
+# $Id: pdconf.py,v 1.14 2003/05/02 09:26:23 anthonybaxter Exp $
 #
 
 import sys
@@ -34,7 +34,10 @@ class PDHost(object):
 
     def __init__(self, name, ip):
         self.name = name
-        self.ip = ip
+        if type(ip) is type(u''):
+            self.ip = ip.encode('ascii')
+        else:
+            self.ip = ip
 
 class PDGroup(object):
     __slots__ = [ 'name', 'scheduler', 'hosts' ]
