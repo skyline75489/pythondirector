@@ -37,3 +37,4 @@ seriously refactor the CSS and also the pdadmin_running HTML. Nasty nasty.
 
 pid file?
 
+setup.py stuff

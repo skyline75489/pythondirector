@@ -1,0 +1,8 @@
+*.pyo
+*.pyc
+*.cover
+pychecker.out
+index.html*
+testbed
+asyncore.py
+asynchat.py

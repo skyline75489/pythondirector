@@ -8,7 +8,7 @@ import sys
 class PythonDirector(object):
 
     def __init__(self, config):
-        import pdconf
+        from pydirector import pdconf
         self.listeners = {}
         self.schedulers = {}
         self.manager = None
@@ -17,7 +17,7 @@ class PythonDirector(object):
         self.createListeners()
 
     def start(self):
-        import pdadmin
+        from pydirector import pdadmin
         import asyncore
         if self.conf.admin is not None:
             pdadmin.start(adminconf=self.conf.admin, director=self)
@@ -28,7 +28,7 @@ class PythonDirector(object):
             sys.exit(0)
 
     def createManager(self):
-        import pdmanager
+        from pydirector import pdmanager
         import threading
         manager = pdmanager.SchedulerManager(self, sleeptime=30)
         mt = threading.Thread(target=manager.mainloop)
@@ -36,7 +36,7 @@ class PythonDirector(object):
         self.manager = mt
 
     def createSchedulers(self, service):
-        import pdschedulers
+        from pydirector import pdschedulers
         for group in service.getGroups():
             s = pdschedulers.createScheduler(group)
             self.schedulers[(service.name,group.name)] = s
@@ -45,7 +45,7 @@ class PythonDirector(object):
         return self.schedulers[(serviceName,groupName)]
 
     def createListeners(self):
-        import pdnetwork, pdconf
+        from pydirector import pdnetwork, pdconf
         for service in self.conf.getServices():
             self.createSchedulers(service)
             eg = service.getEnabledGroup()

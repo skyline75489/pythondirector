@@ -465,4 +465,14 @@ input:hover {
    background-color: #DEE7EC ;
 }
 
+p.copyright {
+    font-weight: bold; 
+    max-width: 60%;
+}
+p.license {
+    font-weight: bold; 
+    max-width: 60%;
+}
+
+
 """
