@@ -1,6 +1,166 @@
+2003-04-30 16:35  anthonybaxter
+
+	* pydirector/pdconf.py: damn. stupid braino.
+
+2003-04-30 16:34  anthonybaxter
+
+	* pydirector/pdconf.py: handle comments in more places.
+
+2003-04-30 16:13  anthonybaxter
+
+	* BUGS.txt, setup.py, pydirector/pdmanager.py,
+	pydirector/pdnetworktwisted.py, pydirector/pdschedulers.py:
+	whitespace n18n
+
+2003-04-30 16:13  anthonybaxter
+
+	* TODO.txt: [no log message]
+
+2003-04-30 16:07  anthonybaxter
+
+	* pydir.py: up the number of open files with
+	resource.setrlimit(RLIMIT_NOFILE)
+
+2003-04-30 16:05  anthonybaxter
+
+	* pydirector/pdmanager.py: in the case where all backends are down,
+	go into aggressive mode - automatically re-add all servers each
+	time round the main manager loop.
+
+2003-04-30 16:04  anthonybaxter
+
+	* pydirector/pdconf.py: accept (and ignore) comments in the XML
+	config.
+
+2003-04-30 16:03  anthonybaxter
+
+	* pydirector/pdnetworktwisted.py: use pdlogging rather than
+	'print'.  in the case of no working backends, drop the client
+	connection.
+
+2003-04-30 16:02  anthonybaxter
+
+	* pydirector/pdschedulers.py: handle case where no working servers
+	were found - doneHost won't be able to mark anything as "done".
+
+2003-04-30 16:01  anthonybaxter
+
+	* pydirector/pdmain.py: don't hardcode default manager sleep
+	granularity here as well as in pdmanager.py
+
+2002-11-26 17:42  anthonybaxter
+
+	* pydirector/__init__.py: [no log message]
+
+2002-11-26 17:32  anthonybaxter
+
+	* README.txt, pydir.py, setup.py: more pre-release cleanup.
+
+2002-11-26 16:50  anthonybaxter
+
+	* pydirector/: __init__.py, pdadmin.py, pdmain.py,
+	pdnetworktwisted.py, pdschedulers.py: reindent.py-ified.
+
+2002-11-26 14:53  anthonybaxter
+
+	* pydirector/pdmanager.py: *sigh* missed another line ending.
+
+2002-11-26 14:52  anthonybaxter
+
+	* README.txt: 0.0.5 notes.
+
+2002-11-26 14:45  anthonybaxter
+
+	* pydirector/: __init__.py, pdlogging.py, pdmain.py, pdnetwork.py,
+	pdnetworkasyncore.py, pdnetworktwisted.py, pdschedulers.py: merging
+	the twisted_branch into the HEAD.
+
+2002-11-26 14:34  anthonybaxter
+
+	* pydirector/pdnetworktwisted.py: mark hosts when they're down.
+
+2002-11-26 14:06  anthonybaxter
+
+	* pydirector/pdnetworktwisted.py: twisted now works. ! :)
+
+2002-11-26 11:21  anthonybaxter
+
+	* pydirector/: pdlogging.py, pdschedulers.py: logging cleanup.
+
+2002-11-25 18:03  anthonybaxter
+
+	* pydirector/: pdmain.py, pdnetwork.py, pdnetworktwisted.py: Basic
+	code works - have to handle failure cases and interacting better
+	with the scheduler next.
+
+2002-11-25 17:32  anthonybaxter
+
+	* pydirector/: pdmain.py, pdnetworkasyncore.py,
+	pdnetworktwisted.py: checkpoint to save work
+
+2002-11-25 17:32  anthonybaxter
+
+	* pydirector/pdnetworktwisted.py: file pdnetworktwisted.py was
+	initially added on branch twisted_branch.
+
+2002-11-25 13:30  anthonybaxter
+
+	* pydirector/: __init__.py, pdnetwork.py: pdnetwork now loads
+	either twisted or asyncore versions.
+
+2002-11-25 13:29  anthonybaxter
+
+	* pydirector/: pdnetwork.py, pdnetworkasyncore.py: renamed
+
+2002-11-25 13:29  anthonybaxter
+
+	* pydirector/pdnetworkasyncore.py: file pdnetworkasyncore.py was
+	initially added on branch twisted_branch.
+
+2002-11-25 13:27  anthonybaxter
+
+	* pydirector/: pdmain.py, pdnetwork.py: moved all asyncore stuff
+	into pdnetwork.py, in preparation for twisted version.
+
+2002-07-23 14:25  anthonybaxter
+
+	* pydirector/pdnetwork.py: even more defensiveness in the Listener.
+
+2002-07-23 11:43  anthonybaxter
+
+	* pydirector/: pdlogging.py, pdmanager.py, pdnetwork.py,
+	pdschedulers.py: more logging, with datestamps!
+
+2002-07-17 17:35  anthonybaxter
+
+	* TODO.txt: [no log message]
+
+2002-07-17 15:16  anthonybaxter
+
+	* pydirector/: pdadmin.py, pdconf.py, pdmain.py, pdmanager.py,
+	pdschedulers.py, pdsortlist.py: first cut at refactoring the
+	scheduler.
+
+2002-07-17 15:16  anthonybaxter
+
+	* pydirector/pdsortlist.py: file pdsortlist.py was initially added
+	on branch scheduler-refactor-branch.
+
+2002-07-17 14:53  anthonybaxter
+
+	* pydirector/pdadmin.py: SO_REUSEADDR re-added. oops.
+
+2002-07-08 11:46  anthonybaxter
+
+	* TODO.txt: [no log message]
+
 2002-07-08 10:53  anthonybaxter
 
 	* README.txt, pydirector/__init__.py: 0.0.4 release
+
+2002-07-08 10:52  anthonybaxter
+
+	* TODO.txt, doc/ChangeLog: [no log message]
 
 2002-07-08 10:41  anthonybaxter
 
@@ -13,6 +173,10 @@
 
 	* TODO.txt: async C module notes, upgrade ideas
 
+2002-07-08 10:36  anthonybaxter
+
+	* BUGS.txt: [no log message]
+
 2002-07-08 10:32  anthonybaxter
 
 	* doc/: configure.txt, pythondirector.dtd, xmlreference.txt: can
@@ -24,11 +188,23 @@
 	doc/webapi.txt, doc/xmlreference.txt: document the <client> ->
 	<host> change.
 
+2002-07-04 18:22  anthonybaxter
+
+	* README.txt, doc/ChangeLog, TODO.txt: [no log message]
+
 2002-07-04 14:09  anthonybaxter
 
 	* pydirector/: pdadmin.py, pdconf.py: renamed 'client' to 'host' in
 	config all config objects now support getFoo(name), getFoos(), and
 	getFooNames() (where they have children)
+
+2002-07-03 21:24  anthonybaxter
+
+	* TODO.txt: [no log message]
+
+2002-07-03 21:16  anthonybaxter
+
+	* .cvsignore, doc/ChangeLog, TODO.txt: [no log message]
 
 2002-07-03 21:15  anthonybaxter
 
@@ -39,6 +215,14 @@
 2002-07-03 19:25  anthonybaxter
 
 	* doc/webapi.txt: add needed delGroup command
+
+2002-07-03 19:25  anthonybaxter
+
+	* BUGS.txt, TODO.txt: [no log message]
+
+2002-07-03 19:18  anthonybaxter
+
+	* doc/ChangeLog: [no log message]
 
 2002-07-03 19:17  anthonybaxter
 
@@ -59,6 +243,10 @@
 
 	* pydirector/compareconf.py: module to compare an old and new
 	config, and supply api calls to bring the old up to the new.
+
+2002-07-03 18:15  anthonybaxter
+
+	* TODO.txt: [no log message]
 
 2002-07-03 18:11  anthonybaxter
 
@@ -122,6 +310,10 @@
 
 	* README.txt: on to 0.0.3!
 
+2002-07-02 16:56  anthonybaxter
+
+	* doc/ChangeLog: [no log message]
+
 2002-07-02 16:55  anthonybaxter
 
 	* TODO.txt: delHost implemented.
@@ -183,6 +375,10 @@
 2002-07-01 15:51  anthonybaxter
 
 	* .cvsignore: more setup.py ignore
+
+2002-07-01 15:51  anthonybaxter
+
+	* doc/ChangeLog: [no log message]
 
 2002-07-01 15:51  anthonybaxter
 
