@@ -70,6 +70,13 @@ twisted reactor loop.
 
 ----------------------------------------------------------------------
 
+Changes from 0.0.6 to 0.0.???RELEASE???
+
+- The client address is now passed to the scheduler's getHost() method. 
+  This allows the creation of "sticky" schedulers, where a client is 
+  (by preference) sent to the same backend server. The factory function
+  for schedulers will change to allow things like "roundrobin,sticky".
+
 Changes from 0.0.5 to 0.0.6:
 
 - fixed an error in the (hopefully rare) case where all backend servers

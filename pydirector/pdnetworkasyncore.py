@@ -4,7 +4,7 @@
 #
 # Networking core - asyncore version
 #
-# $Id: pdnetworkasyncore.py,v 1.2 2002/11/26 03:45:38 anthonybaxter Exp $
+# $Id: pdnetworkasyncore.py,v 1.3 2003/04/30 08:41:54 anthonybaxter Exp $
 #
 
 import asyncore, asynchat, socket, sys, errno
@@ -59,6 +59,7 @@ class Receiver(asynchat.async_chat):
         self.set_terminator(None)
         self.listener = listener
         self.id = id(self)
+	self.client_addr = addr
         self.sender = Sender(self, scheduler)
         self.sender.id = self.id
         self.scheduler = scheduler
@@ -124,7 +125,7 @@ class Sender(asynchat.async_chat):
 
     def do_connect(self):
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
-        dest = self.scheduler.getHost(self.receiver)
+        dest = self.scheduler.getHost(self.receiver, self.receiver.client_addr)
         if dest:
             self.dest = dest
             try:

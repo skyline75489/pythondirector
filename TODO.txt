@@ -2,7 +2,6 @@ Things to complete before 0.2:
     logging cleanup
     scheduler stats structures cleanup
     adminUp/adminDown host
-    'sticky' connections. keep a cache of 'client_ip':'backend_ip'. 
     'weighted' hosts
 
 Things to complete before 0.1:
@@ -19,7 +18,9 @@ Things to complete before 0.0.7:
     DNS lookups
     dump out curBadHosts/histBadHosts/open
     make the conn checker work
-    
+    'sticky' connections. keep a cache of 'client_ip':'backend_ip'. 
+      manager needs to be able to call "scheduler.cleanup()" to allow the
+      cache to be manageable.
 
 Lots and lots more documentation
 
