@@ -12,11 +12,12 @@ Things to complete before 0.1:
     Figure out a way to restart/upgrade pydir. Idea: close down listener, start
       new code immediately. Let old connections on old pydir finish (run to 
       completion) before exiting.
+    Replace crappy manager thread and admin thread with twisted-based 
+      implementations.
 
-Things to complete before 0.0.5:
+Things to complete before 0.0.7:
     DNS lookups
     dump out curBadHosts/histBadHosts/open
-    Figure out where the openconns leak is from
     make the conn checker work
     
 
