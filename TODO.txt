@@ -27,6 +27,9 @@ Lots and lots more documentation
 Don't need asynchat any more - switch the Receiver and Sender to use
 asyncore.dispatcher, instead.
 
+Consider how much of the Twisted kool-aid I want to drink - replace 
+the bits that aren't already in Twisted?
+
 Admin interface bits left to do:
 
   Information:
@@ -84,5 +87,4 @@ there now, use the undocumented 'secure="yes"' flag to the admin directive.
 
 Additional idea: connection count scheduler. could be used to track 
 licensing of a service, or limit it.
-
 
