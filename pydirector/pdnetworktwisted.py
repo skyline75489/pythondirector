@@ -4,7 +4,7 @@
 #
 # Networking core - twisted version (http://www.twistedmatrix.com)
 #
-# $Id: pdnetworktwisted.py,v 1.8 2003/05/01 04:28:35 anthonybaxter Exp $
+# $Id: pdnetworktwisted.py,v 1.9 2003/08/18 03:24:48 anthonybaxter Exp $
 #
 
 from twisted.internet.protocol import ServerFactory, ClientFactory, Protocol
@@ -31,14 +31,13 @@ class Listener:
     def __init__(self, name, (bindhost, bindport), scheduler):
         self.name = name
         self.listening_address = (bindhost, bindport)
+        self.rfactory = ReceiverFactory((bindhost,bindport), scheduler)
         self.setScheduler(scheduler)
-        reactor.listenTCP(bindport,
-                          ReceiverFactory((bindhost,bindport), scheduler),
-                          interface=bindhost)
+        reactor.listenTCP(bindport, self.rfactory, interface=bindhost)
 
     def setScheduler(self, scheduler):
         self.scheduler = scheduler
-        # also change our ReceiverFactory!! XXX TODO
+        self.rfactory.setScheduler(scheduler)
 
 class Sender(Protocol):
     """
@@ -202,6 +201,10 @@ class ReceiverFactory(ServerFactory):
         self.bindhost = bindhost
         self.bindport = bindport
         self.scheduler = scheduler
+
+    def setScheduler(self, scheduler):
+        self.scheduler = scheduler
+
 
 def mainloop(timeout=5):
     " run the main loop "
