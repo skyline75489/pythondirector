@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com) 
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdadmin.py,v 1.6 2002/07/02 06:55:17 anthonybaxter Exp $
+# $Id: pdadmin.py,v 1.7 2002/07/03 07:39:19 anthonybaxter Exp $
 #
 
 import sys
@@ -308,15 +308,21 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
                 W('''<tr class="%s"><th colspan="2">hosts</th>
                      <th>open</th><th>total</th></tr>\n'''%klass)
                 counts = stats['open']
+                totals = stats['totals']
                 k = counts.keys()
                 k.sort()
                 for h in k:
                     W('<tr class="%s"><td>'%klass)
                     W("%s</td><td><tt>%s</tt></td>\n"%(hdict[h], h))
                     if counts.has_key(h):
-                        W("<td>%s</td><td>--</td>"%counts[h])
+                        oc = counts[h]
                     else:
-                        W("<td>missing</td><td>--</td>")
+                        oc = '--'
+                    if totals.has_key(h):
+                        tc = totals[h]
+                    else:
+                        tc = '--'
+                    W("<td>%s</td><td>%s</td>"%(oc,tc))
                     W('<td><div class="deleteButton">')
                     a='service=%s&group=%s&ip=%s'%(
                         quote(service.name), quote(group.name), quote(h))

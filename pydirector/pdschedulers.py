@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #   
-# $Id: pdschedulers.py,v 1.3 2002/07/02 06:55:06 anthonybaxter Exp $
+# $Id: pdschedulers.py,v 1.4 2002/07/03 07:39:19 anthonybaxter Exp $
 #
 
 import sys
@@ -32,6 +32,7 @@ class BaseScheduler:
         self.badhosts = {}
         self.open = {}
         self.openconns = {}
+        self.totalconns = {}
         self.loadConfig(groupConfig)
 
     def loadConfig(self, groupConfig):
@@ -44,10 +45,15 @@ class BaseScheduler:
     def getStats(self, verbose=0):
         out = {}
         out['open'] = {}
+        out['totals'] = {}
         hc = self.openconns.items()
         hc.sort()
         for h,c in hc:
             out['open']['%s:%s'%h] = c
+        hc = self.totalconns.items()
+        hc.sort()
+        for h,c in hc:
+            out['totals']['%s:%s'%h] = c
         bh = self.badhosts
         out['bad'] = bh
         return out
@@ -82,6 +88,7 @@ class BaseScheduler:
         cur = self.openconns.get(host)
         if cur is not None:
             self.openconns[host] = cur - 1
+            self.totalconns[host] += 1
 
     def newHost(self, ip, name):
         if type(ip) is not type(()):
@@ -90,6 +97,7 @@ class BaseScheduler:
         self.hostnames[ip] = name
         self.hostnames['%s:%d'%ip] = name
         self.openconns[ip] = 0
+        self.totalconns[ip] = 0
 
     def delHost(self, ip=None, name=None, activegroup=0):
         "remove a host"
@@ -109,6 +117,7 @@ class BaseScheduler:
             self.hosts.remove(ip)
             del self.hostnames[ip] 
             del self.openconns[ip] 
+            del self.totalconns[ip] 
         elif self.badhosts.has_key(ip):
             del self.badhosts[ip]
         else:
@@ -122,6 +131,8 @@ class BaseScheduler:
             self.hosts.remove(host)
         if self.openconns.has_key(host):
             del self.openconns[host]
+        if self.totalconns.has_key(host):
+            del self.totalconns[host]
         self.badhosts[host] = (time(), reason)
         # make sure we also mark this session as done.
         self.doneHost(s_id)
