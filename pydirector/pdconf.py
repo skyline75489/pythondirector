@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdconf.py,v 1.4 2002/07/02 05:57:14 anthonybaxter Exp $
+# $Id: pdconf.py,v 1.5 2002/07/03 09:16:45 anthonybaxter Exp $
 #   
 
 import sys
@@ -153,10 +153,10 @@ class PDAdmin(object):
 class PDConfig(object):
     __slots__ = [ 'services', 'admin', 'dom' ]
 
-    def __init__(self, filename):
+    def __init__(self, filename=None, xml=None):
         self.services = {}
         self.admin = None
-        dom = self._loadDOM(open(filename))
+        dom = self._loadDOM(filename, xml)
         if dom.nodeName != 'pdconfig':
             raise ConfigError, "expected top level 'pdconfig'"
         for item in dom.childNodes:
@@ -175,9 +175,13 @@ class PDConfig(object):
                 import pdlogging
                 pdlogging.initlog(item.getAttribute('file'))
 
-    def _loadDOM(self, file):
+    def _loadDOM(self, filename, xml):
         from xml.dom.minidom import parseString
-        self.dom = parseString(file.read())
+	if filename is not None:
+	    xml = open(file).read()
+	elif xml is None:
+	    raise ConfigError, "need filename or xml"
+        self.dom = parseString(xml)
         return self.dom.childNodes[0]
 
     def loadAdmin(self, admin):
