@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #   
-# $Id: pdschedulers.py,v 1.2 2002/07/01 05:33:16 anthonybaxter Exp $
+# $Id: pdschedulers.py,v 1.3 2002/07/02 06:55:06 anthonybaxter Exp $
 #
 
 import sys
@@ -91,7 +91,7 @@ class BaseScheduler:
         self.hostnames['%s:%d'%ip] = name
         self.openconns[ip] = 0
 
-    def delHost(self, ip=None, name=None):
+    def delHost(self, ip=None, name=None, activegroup=0):
         "remove a host"
         if ip is not None:
             if type(ip) is not type(()):
@@ -103,6 +103,8 @@ class BaseScheduler:
             raise ValueError, "No host named %s"%(name)
         else:
             raise ValueError, "Neither ip nor name supplied"
+        if activegroup and len(self.hosts) == 1:
+            return 0
         if ip in self.hosts:
             self.hosts.remove(ip)
             del self.hostnames[ip] 
@@ -111,6 +113,7 @@ class BaseScheduler:
             del self.badhosts[ip]
         else:
             raise ValueError, "Couldn't find host"
+        return 1
 
     def deadHost(self, s_id, reason=''):
         from time import time
