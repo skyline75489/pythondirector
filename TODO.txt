@@ -14,11 +14,11 @@ Things to complete before 0.1:
     Replace crappy manager thread and admin thread with twisted-based 
       implementations.
 
-Things to complete before 0.0.7:
+Things to complete before 0.0.8:
     Caching of DNS lookups
     dump out curBadHosts/histBadHosts/open
-    make the conn checker work
-    'sticky' connections. keep a cache of 'client_ip':'backend_ip'. 
+    make the connection checker work
+    sticky connections. keep a cache of 'client_ip':'backend_ip'. 
       manager needs to be able to call "scheduler.cleanup()" to allow the
       cache to be manageable.
 
