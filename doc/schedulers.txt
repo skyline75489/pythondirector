@@ -26,6 +26,12 @@ leastconns
   balancing, as the faster servers will process and finish connections 
   faster than the slower servers.
 
+leastconnsrr
+
+  Send the hit to the backend server with the least number of current
+  connections. If multiple machines have the same number of open 
+  connections, send to the least recently used.
+
 
 Future work
 ===========

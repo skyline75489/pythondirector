@@ -2,10 +2,10 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdschedulers.py,v 1.13 2003/05/01 04:26:33 anthonybaxter Exp $
+# $Id: pdschedulers.py,v 1.14 2003/10/09 08:20:59 anthonybaxter Exp $
 #
 
-import sys
+import sys, time
 if sys.version_info < (2,2):
     class object: pass
 
@@ -19,6 +19,8 @@ def createScheduler(groupConfig):
         return LeastConnsScheduler(groupConfig)
     elif schedulerName == "roundrobin":
         return RoundRobinScheduler(groupConfig)
+    elif schedulerName == "leastconnsrr":
+        return LeastConnsRRScheduler(groupConfig)
     else:
         raise ValueError, "Unknown scheduler type `%s'"%schedulerName
 
@@ -33,6 +35,7 @@ class BaseScheduler:
         self.open = {}
         self.openconns = {}
         self.totalconns = {}
+        self.lastclose = {}
         self.loadConfig(groupConfig)
 
     def loadConfig(self, groupConfig):
@@ -95,6 +98,7 @@ class BaseScheduler:
         if cur is not None:
             self.openconns[host] = cur - 1
             self.totalconns[host] += 1
+        self.lastclose[host] = time.time()
 
     def newHost(self, ip, name):
         if type(ip) is not type(()):
@@ -188,3 +192,22 @@ class LeastConnsScheduler(BaseScheduler):
         hosts = [ (x[1],x[0]) for x in self.openconns.items() ]
         hosts.sort()
         return hosts[0][1]
+
+class LeastConnsRRScheduler(BaseScheduler):
+    """
+        The basic LeastConnsScheduler has a problem - it sorts by
+        open connections, then by hostname. So hostnames that are
+        earlier in the alphabet get many many more hits. This is
+        suboptimal.
+    """
+    schedulerName = "leastconnsrr"
+    counter = 0
+
+    def nextHost(self, client_addr):
+        if not self.openconns.keys():
+            return None
+        hosts = [ (x[1], self.lastclose.get(x[0],0), x[0]) 
+                            for x in self.openconns.items() ]
+        hosts.sort()
+        return hosts[0][2]
+

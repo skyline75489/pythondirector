@@ -1,4 +1,4 @@
-README for pythondirector 0.0.6
+README for pythondirector 0.0.6+
 
 This is a pure python TCP load balancer. It takes inbound TCP
 connections and connects them to one of a number of backend
@@ -17,7 +17,8 @@ Features:
   - async i/o based, so much less overhead than fork/thread based
     balancers
 
-  - Multiple scheduling algorithms (random, round robin, leastconns)
+  - Multiple scheduling algorithms (random, round robin, leastconns,
+    leastconns-least-recently-used)
 
   - If a server fails to answer, it's removed from the pool - the
     client that failed to connect gets transparently failed over to 
@@ -61,7 +62,7 @@ implementation. Note that the twisted implementation is much, much
 faster, but does require an additional package - see 
 http://www.twistedmatrix.com for the software.
 
-I've also seen "wierd failures" from asyncore with some sort of nasty
+I've also seen "weird failures" from asyncore with some sort of nasty
 race condition. 
 
 Moving forward, the asyncore implementation is going away, and the
@@ -72,6 +73,10 @@ twisted reactor loop.
 
 Changes from 0.0.6 to 0.0.???RELEASE???
 
+- New "leastconnsrr" scheduler - this is leastconns, with a roundrobin
+  as well. Previously, leastconns would keep the list of hosts sorted,
+  which often meant one system got beaten up pretty badly.
+- Twisted backend group selection works again.
 - The client address is now passed to the scheduler's getHost() method. 
   This allows the creation of "sticky" schedulers, where a client is 
   (by preference) sent to the same backend server. The factory function
