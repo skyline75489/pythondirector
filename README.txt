@@ -1,6 +1,13 @@
-This is a pure-python TCP load balancer. It takes inbound TCP
+README for pythondirector
+
+This is a pure python TCP load balancer. It takes inbound TCP
 connections and connects them to one of a number of backend
 servers. 
+
+Project home: http://pythondirector.sourceforge.net/
+Contact email: Anthony Baxter <anthony@interlink.com.au>
+
+----------------------------------------------------------------------
 
 Features:
 
@@ -19,6 +26,8 @@ Features:
     if they've come back up.
 
   - optional builtin webserver for admin
+
+----------------------------------------------------------------------
 
 API (web based):
 
@@ -52,10 +61,30 @@ Admin interface:
     changeScheduler?service=NNN&group=NNN&scheduler=NNN
 
   user mgmt:
-    ??
+    addUser
+    delUser
 
   service mgmt:
-    ??
+    
+  others:
+
+----------------------------------------------------------------------
+
+Changes from 0.0.2 to 0.0.3:
+
+- delHost hooked up
+- running.xml added - XML dump of current config
+- centralised logging - the various things that write logfile 
+  entries need to be made consistent, and a lot of additional 
+  logging needs to be added.
+- Python2.1 compatibility fix: no socket.gaierror exception on 2.1
+
+Changes from 0.0.1 to 0.0.2:
+
+- refactored web publishing (babybobo)
+- package-ised and distutil-ised the code
+
+----------------------------------------------------------------------
 
 This software is covered by the following license:
 
