@@ -9,7 +9,6 @@ class PythonDirector(object):
 
     def __init__(self, config):
         import pdconf
-
         self.listeners = {}
         self.schedulers = {}
         self.manager = None

@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com) 
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-import threading, BaseHTTPServer, SocketServer, urlparse, re
+import threading, BaseHTTPServer, SocketServer, urlparse, re, urllib
 import socket, time
 
 def start(adminconf, director):
@@ -64,18 +64,18 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler):
                  <link rel=stylesheet type="text/css" href="/pydirector.css">
                  </head></body>""")
             W("""
-            <p class="title">Python Director version %s, running on host %s.</p>
+            <div class="title">Python Director version %s, running on host %s.</div>
             """%(self.server_version, socket.gethostname()))
 
     def footer(self, args):
-        import urllib
         W = self.wfile.write
         W("""
-            <p class="footer">
-            [<a href="running">running</a> <a href="running.txt">(text)</a>]
-            [<a href="config.xml">config.xml</a>] 
-            [<a href="http://pythondirector.sf.net">pythondirector</a>] 
-            </p>""")
+            <div class="footer">
+            <a href="/">top</a>
+            <a href="running">running</a>
+            <a href="config.xml">config.xml</a>
+            <a href="http://pythondirector.sf.net">pythondirector</a>
+            </div>""")
 
         m = args.get('resultMessage')
         if m:
@@ -87,6 +87,9 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_response(302)
         self.send_header("Location", url)
         self.end_headers()
+
+    def action_done(self, mesg):
+        self.redir('/running?resultMessage=%s'%urllib.quote(mesg))
         
     def do_GET(self):
         #print "URL",self.path
@@ -168,35 +171,44 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler):
                     W(" %s -\n"%what)
 
     def pdadmin_running(self, args, access):
+	from urllib import quote
         if not self.checkAccess(access, 'Read'): return
         self.header(html=1)
         W = self.wfile.write
         W("<p><b>current config</b></p>\n")
         conf = self.director.conf
         for service in conf.getServices():
-            W('<table><tr><th align="left" colspan="4">Service: %s</th></tr>\n'%
+            W('<table><tr><th align="left" colspan="1">Service: %s</th></tr>\n'%
                                                         service.name)
-            W('<tr><td colspan="4">Listening on %s</td></tr>\n'%service.listen)
+            W('<tr><td colspan="1">Listening on %s</td></tr>\n'%service.listen)
             eg = service.getEnabledGroup()
             groups = service.getGroups()
             for group in groups:
                 sch = self.director.getScheduler(service.name, group.name)
                 stats = sch.getStats(verbose=args.get('verbose'))
-                hosts = group.getHosts()
-                hdict = {}
-                for h in hosts:
-                    hdict[h.ip] = h.name
+                hdict = sch.getHosts()
                 if group is eg:
                     klass = 'enabled'
                 else:
                     klass = 'inactive'
-                W('<tr class="%s"><td colspan="4">%s '%(klass, group.name))
+                W('<tr class="%s"><td colspan="4" class="servHeader">%s '%(klass, group.name))
                 if group is eg:
                     W('<b>ENABLED</b>\n')
                 else:
                     W('<a href="enableGroup?service=%s&group=%s">enable</a>\n'%
                                             (service.name, group.name))
-                W('</td></tr>\n')
+                W('</td><td valign="top" rowspan="2" class="addWidget">')
+                W('<table class="addWidget">')
+                W('<form method="GET" action="addHost">')
+                W('<input type="hidden" name="service" value="%s">'%service.name)
+                W('<input type="hidden" name="group" value="%s">'%group.name)
+                W('<tr><td><div class="widgetLabel">name</div></td><td><input name="name" type="text" size="15"></td></tr>')
+                W('<tr><td><div class="widgetLabel">ip</div></td><td><input name="ip" type="text" size="15"></td></tr>')
+                W('<tr><td colspan=2 align="center"><input type="submit" value="add host"></td></tr>')
+                W('</form>')
+                W('</table>')
+                W('</td>')
+                W('</tr>\n')
                 W('''<tr class="%s"><th colspan="2">hosts</th>
                      <th>open</th><th>total</th></tr>\n'''%klass)
                 counts = stats['open']
@@ -209,6 +221,11 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler):
                         W("<td>%s</td><td>--</td>"%counts[h])
                     else:
                         W("<td>missing</td><td>--</td>")
+		    W('<td><div class="deleteButton">')
+		    a='service=%s&group=%s&ip=%s'%(
+			quote(service.name), quote(group.name), quote(h))
+		    W('<a href="delHost?%s">remove host</a>'%(a))
+		    W('</div></td>')
                     W('</tr>')
                 bad = stats['bad']
                 if bad:
@@ -222,33 +239,38 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler):
                     W("<td>%s</td><td>--</td>"%what)
                     W('</tr>')
             W("</table>")
-            W('<div class="adminForm">\n')
-            #  add
-            W('</div>\n')
         self.footer(args)
 
     def pdadmin_addHost(self, args, access):
         if not self.checkAccess(access, 'Write'): return
-        self.header(html=1)
+        sched = self.director.getScheduler(serviceName=args['service'], groupName=args['group'])
+        sched.newHost(name=args['name'], ip=args['ip'])
+        # also add to conf DOM object
+        self.action_done('Host %s(%s) added to %s / %s'%(
+                args['name'], args['ip'], args['group'], args['service']))
+        self.wfile.write("OK\n")
 
     def pdadmin_delHost(self, args, access):
         if not self.checkAccess(access, 'Write'): return
-        self.header(html=1)
+        self.action_done('not implemented yet')
+        self.wfile.write("OK\n")
 
     def pdadmin_delAllHosts(self, args, access):
         if not self.checkAccess(access, 'Write'): return
-        self.header(html=1)
+        self.action_done('not implemented yet')
+        self.wfile.write("OK\n")
 
     def pdadmin_enableGroup(self, args, access):
         if not self.checkAccess(access, 'Write'): return
         self.director.enableGroup(args['service'], args['group'])
-        self.redir('/running?resultMessage=Group%%20%s%%20enabled%%20for%%20service%%20%s'%(
+        self.action_done('Group %s enabled for service %s'%(
                 args['group'], args['service']))
         self.wfile.write("OK\n")
 
     def pdadmin_changeScheduler(self, args, access):
         if not self.checkAccess(access, 'Write'): return
-        self.header(html=1)
+        self.action_done('not implemented yet')
+        self.wfile.write("OK\n")
         
 
     def pdadmin_config_xml(self, args, access):
@@ -293,18 +315,80 @@ def html_quote(str):
     return re.subn("<", "&lt;", str)[0]
 
 PYDIR_CSS = """
-A:link {color: #000000 }
-A:visited {color: #000000}
-p {
+body {
     font-family: helvetica; 
     font-size: 10pt 
 }
-p.footer {
+a {
+    text-decoration: none;
+    background-color: transparent;
+}
+
+A:link {color: #000000 }
+A:visited {color: #000000}
+/* borrowed ideas from plone */
+div.footer {
     font-family: courier; 
     font-size: 8pt ;
+    background: transparent;
+    border-collapse: collapse;
+    border-top-color: #88AAAA;
+    border-top-style: solid;
+    border-top-width: 1px;
+    padding: 0em 0em 0.5em 2em;
+    white-space: nowrap;
     color: #000033 ; 
-    background-color: #dddddd ; 
 }
+
+div.footer a {
+    background: transparent;
+    border-color: #88AAAA;
+    border-width: 1px; 
+    border-style: none solid solid solid;
+    color: #226666;
+    font-weight: normal;
+    margin-right: 0.5em;
+    padding: 0em 2em;
+    text-transform: lowercase;
+}
+
+div.footer a:hover {
+    background: #DEE7EC;
+    border-color: #88AAAA;
+    border-top-color: #88AAAA;
+    color: #436976;
+}
+
+div.title { 
+    font-weight: bold; 
+    color: #000033 ; 
+    background: transparent;
+    border-color: #88AAAA;
+    border-style: none solid solid solid ;
+    border-width: 1px;
+    margin: 4px;
+    padding: 3px;
+    white-space: nowrap;
+}
+div.deleteButton { 
+    color: red ; 
+    background: yellow;
+    border-collapse: collapse;
+    border-color: red;
+    border-style: solid solid solid solid ;
+    border-width: 1px;
+    padding: 1px;
+    white-space: nowrap;
+}
+
+div.deleteButton a {
+  color: black;
+}
+
+div.deleteButton a:hover {
+  color: red;
+}
+
 p.message {
     color: #000000 ; 
     background-color: #eeeeee ; 
@@ -323,16 +407,8 @@ p.button {
     border: thin solid #cc4400 ;
     padding: 0px ;
 }
-p.title { 
-    font-size: 10pt; 
-    font-weight: bold; 
-    color: #000033 ; 
-    background-color: #dddddd ; 
-}
-td { 
-    font-family: helvetica; 
-    font-size: 10pt
-}
+
+
 tr.enabled { 
     background-color: #ccdddd; 
     color: #dd0000 
@@ -341,9 +417,59 @@ tr.inactive {
     background-color: #eeeeee; 
     color: #000000 
 }
+tr.inactive td.servHeader a { 
+    background-color: #ccdddd; 
+    color: #000000 ;
+    padding: 0px 2px 0px 2px;
+    border-style: solid;
+    border-width: 1px;
+}
+tr.inactive td.servHeader a:hover { 
+    background-color: #ccdddd; 
+    color: red
+}
+
 th {
     font-family: helvetica ; 
-    font-size: 10pt
+    font-size: 10pt ;
+}
+
+td { 
+    font: 10px helvetica; 
+
+}
+
+td.addWidget {
+    padding: 0px;
+}
+table.addWidget {
+    padding: 0px;
+}
+
+/*table.addWidget td {
+    font: 10px helvetica; 
+    background-color: white;
+    margin: 0em 0em 0em 0em;
+}
+*/
+
+div.widgetLabel {
+    background-color: transparent;
+    font-weight: bold;
+    margin: 0em 0em 0em 0em;
+}
+
+input {
+/* Small cosmetic fix which makes input gadgets look nicer. */
+    font: 10px Verdana, Helvetica, Arial, sans-serif;
+    border: 1px solid #8cacbb;  
+    color: Black;
+    background-color: white;
+    margin: 0em 0em 0em 0em;
+}
+
+input:hover {
+   background-color: #DEE7EC ;
 }
 
 """

@@ -22,6 +22,7 @@ class BaseScheduler:
 
     def __init__(self, groupConfig):
         self.hosts = []
+        self.hostnames = {}
         self.badhosts = {}
         self.open = {}
         self.openconns = {}
@@ -31,7 +32,7 @@ class BaseScheduler:
         self.group = groupConfig
         hosts = self.group.getHosts()
         for host in hosts:
-            self.newHost(host.ip)
+            self.newHost(host.ip, host.name)
         #print self.hosts
 
     def getStats(self, verbose=1):
@@ -70,6 +71,9 @@ class BaseScheduler:
             self.openconns[host] = cur+1
             return host
 
+    def getHosts(self):
+        return self.hostnames
+
     def doneHost(self, s_id):
         t,host = self.open[s_id]
         del self.open[s_id]
@@ -77,11 +81,34 @@ class BaseScheduler:
         if cur is not None:
             self.openconns[host] = cur - 1
 
-    def newHost(self, dest):
-        if type(dest) is not type(()):
-            dest = pdconf.splitHostPort(dest)
-        self.hosts.append(dest)
-        self.openconns[dest] = 0
+    def newHost(self, ip, name):
+        if type(ip) is not type(()):
+            ip = pdconf.splitHostPort(ip)
+        self.hosts.append(ip)
+        self.hostnames[ip] = name
+        self.hostnames['%s:%d'%ip] = name
+        self.openconns[ip] = 0
+
+    def delHost(self, ip=None, name=None):
+        "remove a host"
+        if ip is not None:
+            if type(ip) is not type(()):
+                ip = pdconf.splitHostPort(ip)
+        elif name is not None:
+            for ip in self.hostnames:
+                if self.hostnames[ip] == name:
+                    break
+            raise ValueError, "No host named %s"%(name)
+        else:
+            raise ValueError, "Neither ip nor name supplied"
+        if ip in self.hosts:
+            self.hosts.remove(ip)
+            del self.hostnames[ip] 
+            del self.openconns[ip] 
+        elif self.badhosts.has_key(ip):
+            del self.badhosts[ip]
+        else:
+            raise ValueError, "Couldn't find host"
 
     def deadHost(self, s_id, reason=''):
         from time import time

@@ -8,7 +8,6 @@ Admin interface:
     config / config.txt 
     running.xml
   Host mgmt:
-    addHost
     delHost
     delAllHosts
   group mgmt:
@@ -33,3 +32,5 @@ dead entry into the mix.
 expires on the CSS.
 
 'sticky' connections. keep a cache of 'client_ip':'backend_ip'. easy :)
+
+seriously refactor the CSS and also the pdadmin_running HTML. Nasty nasty.
