@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdnetwork.py,v 1.4 2002/07/01 08:52:22 anthonybaxter Exp $
+# $Id: pdnetwork.py,v 1.5 2002/07/03 07:56:44 anthonybaxter Exp $
 #   
 
 import asyncore, asynchat, socket, sys, errno
@@ -28,6 +28,7 @@ class Listener(asyncore.dispatcher):
         self.listen(10)
 
     def handle_accept(self):
+	# don't accept if no backends available!
         who = self.accept()
         #print "got connection from", who
         r = Receiver(self, who, self.scheduler)
@@ -185,5 +186,5 @@ class Sender(asynchat.async_chat):
 
     def log_info (self, message, type='info'):
         if __debug__ or type != 'info':
-            pdlogging.log('%s: %s' % (type, message))
+            pdlogging.log('%s: %s\n' % (type, message))
 
