@@ -1,3 +1,73 @@
+2002-07-02 16:55  anthonybaxter
+
+	* TODO.txt: delHost implemented.
+
+2002-07-02 16:55  anthonybaxter
+
+	* pydirector/pdadmin.py: added delHost support.
+
+2002-07-02 16:55  anthonybaxter
+
+	* pydirector/pdschedulers.py: delHost takes an argument
+	'activegroup'. If true, you can't delete the last host in the
+	scheduler.
+
+2002-07-02 16:39  anthonybaxter
+
+	* confex.xml: wee. more sample stuff.
+
+2002-07-02 16:29  anthonybaxter
+
+	* TODO.txt: 0.1 plans.
+
+2002-07-02 15:59  anthonybaxter
+
+	* README.txt: more API.
+
+2002-07-02 15:58  anthonybaxter
+
+	* TODO.txt: complete the API list.
+
+2002-07-02 15:58  anthonybaxter
+
+	* pydirector/pdadmin.py: added method running.xml running.txt is
+	more sane.  running.xml and config.xml are now access 'Read'
+
+2002-07-02 15:57  anthonybaxter
+
+	* pydirector/pdconf.py: add PDAdmin.getUsers() to retrieve full
+	user list.
+
+2002-07-01 18:52  anthonybaxter
+
+	* TODO.txt, confex.xml, pydirector/pdadmin.py,
+	pydirector/pdconf.py, pydirector/pdlogging.py,
+	pydirector/pdnetwork.py: added a bunch of new logging support to
+	the code. logging now all goes to a single central file. many many
+	logging entries need to be written.
+
+2002-07-01 16:52  anthonybaxter
+
+	* TODO.txt: more todo
+
+2002-07-01 16:51  anthonybaxter
+
+	* pydirector/pdnetwork.py: socket.gaierror is a 2.2-ism. Handle
+	it's absence for 2.1. Todo: what does 'unknown host' raise under
+	2.1.
+
+2002-07-01 15:51  anthonybaxter
+
+	* .cvsignore: more setup.py ignore
+
+2002-07-01 15:51  anthonybaxter
+
+	* doc/ChangeLog: [no log message]
+
+2002-07-01 15:51  anthonybaxter
+
+	* MANIFEST.in: added ChangeLog to dist.
+
 2002-07-01 15:49  anthonybaxter
 
 	* TODO.txt: more notes to self.
