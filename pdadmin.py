@@ -3,7 +3,8 @@
 # and Anthony Baxter <anthony@interlink.com.au>
 #
 import threading, BaseHTTPServer, SocketServer, urlparse, re, urllib
-import socket, time
+import socket, time, sys, traceback
+import micropubl
 
 def start(adminconf, director):
     AdminClass.director = director
@@ -15,13 +16,14 @@ def start(adminconf, director):
     at.setDaemon(1)
     at.start()
 
-class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler):
+class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher):
     server_version = "Pydir/0.01"
     director = None
     config = None
     starttime = None
+    published_prefix = "pdadmin_"
 
-    def checkAuth(self, authstr):
+    def getUser(self, authstr):
         from base64 import decodestring
         type,auth = authstr.split()
         if type.lower() != 'basic':
@@ -33,17 +35,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler):
             # unknown user or incorrect pw
             return None
         else:
-            return userObj.access.lower()
-
-    def checkAccess(self, access, required):
-        if required == "Read" and access in ('full', 'readonly'):
-            return 1
-        elif required == "Write" and access == 'full':
-            return 1
-        else:
-            self.unauth(why='access privs')
-            return 0
-
+            return userObj
 
     def unauth(self, why):
         print "auth failure", why
@@ -67,7 +59,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler):
             <div class="title">Python Director version %s, running on host %s.</div>
             """%(self.server_version, socket.gethostname()))
 
-    def footer(self, args):
+    def footer(self, message=''):
         W = self.wfile.write
         W("""
             <div class="footer">
@@ -77,10 +69,9 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler):
             <a href="http://pythondirector.sf.net">pythondirector</a>
             </div>""")
 
-        m = args.get('resultMessage')
-        if m:
-            m = urllib.unquote(m)
-            W("""<p class="message">%s</p>"""%m)
+        if message:
+            message = urllib.unquote(message)
+            W("""<p class="message">%s</p>"""%message)
         W("""</body></html>\n\n""")
 
     def redir(self, url):
@@ -98,32 +89,45 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler):
         authstr = self.headers.get('Authorization','')
         #print "authstr", authstr
         if authstr:
-            access = self.checkAuth(authstr)
-        if not (authstr and access):
+            user = self.getUser(authstr)
+        if not (authstr and user):
             self.unauth(why='no valid auth')
             return
 
         if u == "/":
-            self.pdadmin_index_html(dictify(q), access)
-            return
+            u = 'index_html'
+
+        args = dictify(q)
 
         if u.startswith("/"):
-            u = re.sub(r'\.', '_', u[1:])
-        if hasattr(self, 'pdadmin_%s'%u):
-            getattr(self, 'pdadmin_%s'%u)(dictify(q), access)
-        else:
+            u = u[1:]
+        u = re.sub(r'\.', '_', u)
+
+        try:
+            self.publish(u, args, user=user)
+        except micropubl.NotFoundError:
             self.send_response(404)
             self.send_header("Content-type", "text/html")
             self.end_headers()
             self.wfile.write("<html><body>no such URL</body></html>")
+        except micropubl.AccessDenied:
+            self.unauth('insufficient privileges')
+            return 
+        except micropubl.uPublisherError:
+            self.send_response(500)
+            self.send_header("Content-type", "text/html")
+            self.end_headers()
+            self.wfile.write("<html><body><h2>error:</h2>")
+            e,v,t = sys.exc_info()
+            self.wfile.write("<b>%s %s</b>\n<pre>"%(e,v))
+            self.wfile.write("\n".join(traceback.format_tb(t)))
+            self.wfile.write("</pre>\n</body></html>")
 
-    def pdadmin_pydirector_css(self, args, access):
-        if not self.checkAccess(access, 'Read'): return
+    def pdadmin_pydirector_css(self, Access='Read'):
         self.header(html=0)
         self.wfile.write(PYDIR_CSS)
 
-    def pdadmin_index_html(self, args, access):
-        if not self.checkAccess(access, 'Read'): return
+    def pdadmin_index_html(self, Access='Read'):
         self.header(html=1)
         self.wfile.write("""
             <p>Python Director version %s, running on %s</p>
@@ -131,10 +135,9 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler):
             """%(self.server_version,
                  socket.gethostname(),
                  time.ctime(self.starttime)))
-        self.footer(args)
+        self.footer()
 
-    def pdadmin_running_txt(self, args, access):
-        if not self.checkAccess(access, 'Read'): return
+    def pdadmin_running_txt(self, verbose, Access='Read'):
         self.header(html=0)
         W = self.wfile.write
         conf = self.director.conf
@@ -144,7 +147,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler):
             groups = service.getGroups()
             for group in groups:
                 sch = self.director.getScheduler(service.name, group.name)
-                stats = sch.getStats(verbose=args.get('verbose'))
+                stats = sch.getStats(verbose=verbose)
                 hosts = group.getHosts()
                 hdict = {}
                 for h in hosts:
@@ -170,9 +173,8 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler):
                     when,what = bad[k]
                     W(" %s -\n"%what)
 
-    def pdadmin_running(self, args, access):
-	from urllib import quote
-        if not self.checkAccess(access, 'Read'): return
+    def pdadmin_running(self, verbose=0, resultmessage='', Access='Read'):
+        from urllib import quote
         self.header(html=1)
         W = self.wfile.write
         W("<p><b>current config</b></p>\n")
@@ -185,7 +187,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler):
             groups = service.getGroups()
             for group in groups:
                 sch = self.director.getScheduler(service.name, group.name)
-                stats = sch.getStats(verbose=args.get('verbose'))
+                stats = sch.getStats(verbose=verbose)
                 hdict = sch.getHosts()
                 if group is eg:
                     klass = 'enabled'
@@ -221,11 +223,11 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler):
                         W("<td>%s</td><td>--</td>"%counts[h])
                     else:
                         W("<td>missing</td><td>--</td>")
-		    W('<td><div class="deleteButton">')
-		    a='service=%s&group=%s&ip=%s'%(
-			quote(service.name), quote(group.name), quote(h))
-		    W('<a href="delHost?%s">remove host</a>'%(a))
-		    W('</div></td>')
+                    W('<td><div class="deleteButton">')
+                    a='service=%s&group=%s&ip=%s'%(
+                        quote(service.name), quote(group.name), quote(h))
+                    W('<a href="delHost?%s">remove host</a>'%(a))
+                    W('</div></td>')
                     W('</tr>')
                 bad = stats['bad']
                 if bad:
@@ -239,50 +241,41 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler):
                     W("<td>%s</td><td>--</td>"%what)
                     W('</tr>')
             W("</table>")
-        self.footer(args)
+        self.footer(resultmessage)
 
-    def pdadmin_addHost(self, args, access):
-        if not self.checkAccess(access, 'Write'): return
-        sched = self.director.getScheduler(serviceName=args['service'], groupName=args['group'])
-        sched.newHost(name=args['name'], ip=args['ip'])
+    def pdadmin_addHost(self, service, group, name, ip, Access='Write'):
+        sched = self.director.getScheduler(serviceName=service, groupName=group)
+        sched.newHost(name=name, ip=ip)
         # also add to conf DOM object
         self.action_done('Host %s(%s) added to %s / %s'%(
-                args['name'], args['ip'], args['group'], args['service']))
+                name, ip, group, service))
         self.wfile.write("OK\n")
 
-    def pdadmin_delHost(self, args, access):
-        if not self.checkAccess(access, 'Write'): return
+    def pdadmin_delHost(self, service, group, ip, Access='Write'):
         self.action_done('not implemented yet')
         self.wfile.write("OK\n")
 
-    def pdadmin_delAllHosts(self, args, access):
-        if not self.checkAccess(access, 'Write'): return
+    def pdadmin_delAllHosts(self, service, group, Access='Write'):
         self.action_done('not implemented yet')
         self.wfile.write("OK\n")
 
-    def pdadmin_enableGroup(self, args, access):
-        if not self.checkAccess(access, 'Write'): return
-        self.director.enableGroup(args['service'], args['group'])
+    def pdadmin_enableGroup(self, service, group, Access='Write'):
+        self.director.enableGroup(service, group)
         self.action_done('Group %s enabled for service %s'%(
-                args['group'], args['service']))
+                group, service))
         self.wfile.write("OK\n")
 
-    def pdadmin_changeScheduler(self, args, access):
-        if not self.checkAccess(access, 'Write'): return
+    def pdadmin_changeScheduler(self, service, group, scheduler, Access='Write'):
         self.action_done('not implemented yet')
         self.wfile.write("OK\n")
         
-
-    def pdadmin_config_xml(self, args, access):
-        if not self.checkAccess(access, 'Write'): return
+    def pdadmin_config_xml(self, Access='Write'):
         self.header(html=0)
         self.wfile.write(self.director.conf.dom.toxml())
 
-    def pdadmin_status_txt(self, args, access):
-        if not self.checkAccess(access, 'Read'): return
-        else: self.header(html=0)
+    def pdadmin_status_txt(self, verbose=0, Access='Read'):
+        self.header(html=0)
         W = self.wfile.write
-        verbose = args.get('verbose',0)
         for listener in self.director.listeners.values():
             sch_stats = listener.scheduler.getStats(verbose='verbose')
             lh,lp = listener.listening_address
@@ -306,7 +299,7 @@ def dictify(q):
     if not q: return {}
     avs = q.split('&')
     for av in avs:
-        print "av", av
+        #print "av", av
         a,v = av.split('=',1)
         out[unquote(a)] = unquote(v)
     return out

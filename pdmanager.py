@@ -23,7 +23,7 @@ class SchedulerManager(object):
             time.sleep(self.sleeptime)
             for listener in self.director.listeners.values():
                 scheduler = listener.scheduler
-                print scheduler.showStats(verbose=0)
+                #print scheduler.showStats(verbose=0)
                 self.checkBadHosts(scheduler)
 
     def checkBadHosts(self, scheduler):

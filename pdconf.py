@@ -3,6 +3,16 @@
 # and Anthony Baxter <anthony@interlink.com.au>
 #   
 
+def getDefaultArgs(methodObj):
+    import inspect
+    arglist, vaarg, kwarg, defargs = inspect.getargspec(methodObj.im_func)
+    arglist.reverse()
+    defargs = list(defargs)
+    defargs.reverse()
+    ad = {}
+    for a,v in zip(arglist, defargs):
+        ad[a] = v
+    return ad
 
 def splitHostPort(s):
     h,p = s.split(':')
@@ -96,6 +106,18 @@ class PDAdminUser(object):
             return 1
         else:
             return 0
+
+    def checkAccess(self, methodObj, argdict):
+        from inspect import getargspec
+        a = getDefaultArgs(methodObj)
+        required = a.get('Access', 'NoAccess')
+        if required == "Read" and self.access in ('full', 'readonly'):
+            return 1
+        elif required == "Write" and self.access == 'full':
+            return 1
+        else:
+            return 0
+
 
 
 class PDAdmin(object):
