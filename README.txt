@@ -1,4 +1,4 @@
-README for pythondirector 0.0.5
+README for pythondirector 0.0.6
 
 This is a pure python TCP load balancer. It takes inbound TCP
 connections and connects them to one of a number of backend
@@ -32,6 +32,21 @@ Features:
 
 ----------------------------------------------------------------------
 
+Performance:
+
+  - On my notebook, load balancing an apache on the same local ethernet
+    (serving a static 18K text file) gets 155 connections per second and
+    2850 kbytes/s throughput (apachebench -n 2000 -c 10). Connecting directly
+    to the apache gets 180 conns/sec and 3400kbytes/s. So unless you're 
+    serving really really stupidly high hit rates it's unlikely to be 
+    pythondirector causing you difficulties. (Note that 155 connections/sec 
+    is 13 million hits per day...)
+
+  - Running purely over the loopback interface to a local apache seems to
+    max out at around 350 conns/second.
+
+----------------------------------------------------------------------
+
 API (web based):
 
     See doc/webapi.txt for a full list of web api commands
@@ -49,8 +64,21 @@ http://www.twistedmatrix.com for the software.
 I've also seen "wierd failures" from asyncore with some sort of nasty
 race condition. 
 
+Moving forward, the asyncore implementation is going away, and the
+existing separate manager and admin threads will merge into the main
+twisted reactor loop.
+
 ----------------------------------------------------------------------
 
+Changes from 0.0.5 to 0.0.6:
+
+- fixed an error in the (hopefully rare) case where all backend servers
+  are down.
+- the main script uses resource.setrlimit() to boost the number of open
+  filedescriptors (solaris has stupidly low defaults)
+- when all backend servers are down, the manager thread goes into a much
+  more aggressive mode re-adding them.
+- handle comments in the config file
 
 Changes from 0.0.4 to 0.0.5:
 
