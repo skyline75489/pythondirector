@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdconf.py,v 1.14 2003/05/02 09:26:23 anthonybaxter Exp $
+# $Id: pdconf.py,v 1.15 2003/10/09 08:26:56 anthonybaxter Exp $
 #
 
 import sys
@@ -23,6 +23,8 @@ def getDefaultArgs(methodObj):
 def splitHostPort(s):
     h,p = s.split(':')
     p = int(p)
+    if h == '*':
+        h = ''
     return h,p
 
 class ConfigError(Exception): pass
