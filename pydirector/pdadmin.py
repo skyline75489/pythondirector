@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdadmin.py,v 1.12 2002/07/08 00:41:56 anthonybaxter Exp $
+# $Id: pdadmin.py,v 1.13 2002/07/17 04:53:52 anthonybaxter Exp $
 #
 
 import sys
@@ -39,10 +39,12 @@ class PDTCPServerBase:
         pdlogging.log("ADMIN(Exception) %s - %s: %s %s\n"%
                 (time.ctime(time.time()), t,v,tbinfo))
 
-class PDTCPServer(SocketServer.ThreadingTCPServer, PDTCPServerBase): pass
+class PDTCPServer(SocketServer.ThreadingTCPServer, PDTCPServerBase): 
+    allow_reuse_address = 1
 
 if SSL is not None:
     class PDTCPServerSSL(SSL.ThreadingSSLServer, PDTCPServerBase):
+        allow_reuse_address = 1
         def __init__(self, server_addr, handler, ssl_ctx):
             SSL.ThreadingSSLServer.__init__(self, server_addr, handler, ssl_ctx)
             self.server_name = server_addr[0]
