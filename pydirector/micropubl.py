@@ -1,8 +1,8 @@
 #
-# Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com) 
+# Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: micropubl.py,v 1.2 2002/07/01 05:33:44 anthonybaxter Exp $
+# $Id: micropubl.py,v 1.3 2002/07/03 09:17:23 anthonybaxter Exp $
 #
 
 import sys
@@ -10,7 +10,7 @@ if sys.version_info < (2,2):
     class object: pass
 
 # a.k.a babybobo. A very small and limited object publisher.
-# where possible, it's not tied to any particular mechanism 
+# where possible, it's not tied to any particular mechanism
 # (e.g. web)
 
 def patchArgs(argdict):
@@ -38,10 +38,10 @@ class MicroPublisher(object):
         self.checkArgs(fnarg, args)
         # check that the user has correct privs
         if not user.checkAccess(fnarg, args):
-	    raise AccessDenied, "userobject denied access"
-	# finally, call the method
-	fnarg(**args)
-	
+            raise AccessDenied, "userobject denied access"
+        # finally, call the method
+        fnarg(**args)
+
 
     def checkArgs(self, fn, args):
         from inspect import getargspec
@@ -77,4 +77,3 @@ class MicroPublisher(object):
     def checkPublisherAccess(self, fn, args):
         " override in subclass if desired "
         return
-

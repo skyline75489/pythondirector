@@ -1,8 +1,8 @@
 #
-# Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com) 
+# Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdadmin.py,v 1.8 2002/07/03 08:11:54 anthonybaxter Exp $
+# $Id: pdadmin.py,v 1.9 2002/07/03 09:17:23 anthonybaxter Exp $
 #
 
 import sys
@@ -99,7 +99,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
 
     def action_done(self, mesg):
         self.redir('/running?resultMessage=%s'%urllib.quote(mesg))
-        
+
     def do_GET(self):
         try:
             self.do_request()
@@ -136,7 +136,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
             self.wfile.write("<html><body>no such URL</body></html>")
         except micropubl.AccessDenied:
             self.unauth('insufficient privileges')
-            return 
+            return
         except micropubl.uPublisherError:
             self.send_response(500)
             self.send_header("Content-type", "text/html")
@@ -194,7 +194,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
                 # now add disabled hosts.
                 for k in stats['bad'].keys():
                     clients.append('%s:%s'%k)
-                clients.sort() 
+                clients.sort()
                 for h in clients:
                     xg.appendChild(doc.createTextNode("\n            "))
                     xh = doc.createElement("client")
@@ -256,7 +256,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
                 W('group %s %s\n'%(group.name, klass))
                 counts = stats['open']
                 k = counts.keys()
-                k.sort() # k is now a list of hosts in the opencount stats 
+                k.sort() # k is now a list of hosts in the opencount stats
                 for h in k:
                     W("host %s %s "%(hdict[h], h))
                     if counts.has_key(h):
@@ -266,7 +266,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
                 bad = stats['bad']
                 for k in bad:
                     host = '%s:%s'%k
-                    W("disabled %s %s"%(hdict[host], host)) 
+                    W("disabled %s %s"%(hdict[host], host))
                     when,what = bad[k]
                     W(" %s -\n"%what)
 
@@ -390,7 +390,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
     def pdadmin_changeScheduler(self, service, group, scheduler, Access='Write'):
         self.action_done('not implemented yet')
         self.wfile.write("OK\n")
-        
+
     def pdadmin_config_xml(self, Access='Read'):
         self.header(html=0)
         self.wfile.write(self.director.conf.dom.toxml())
@@ -445,8 +445,8 @@ def html_quote(str):
 
 PYDIR_CSS = """
 body {
-    font-family: helvetica; 
-    font-size: 10pt 
+    font-family: helvetica;
+    font-size: 10pt
 }
 a {
     text-decoration: none;
@@ -457,7 +457,7 @@ A:link {color: #000000 }
 A:visited {color: #000000}
 /* borrowed ideas from plone */
 div.footer {
-    font-family: courier; 
+    font-family: courier;
     font-size: 8pt ;
     background: transparent;
     border-collapse: collapse;
@@ -466,13 +466,13 @@ div.footer {
     border-top-width: 1px;
     padding: 0em 0em 0.5em 2em;
     white-space: nowrap;
-    color: #000033 ; 
+    color: #000033 ;
 }
 
 div.footer a {
     background: transparent;
     border-color: #88AAAA;
-    border-width: 1px; 
+    border-width: 1px;
     border-style: none solid solid solid;
     color: #226666;
     font-weight: normal;
@@ -488,9 +488,9 @@ div.footer a:hover {
     color: #436976;
 }
 
-div.title { 
-    font-weight: bold; 
-    color: #000033 ; 
+div.title {
+    font-weight: bold;
+    color: #000033 ;
     background: transparent;
     border-color: #88AAAA;
     border-style: none solid solid solid ;
@@ -499,8 +499,8 @@ div.title {
     padding: 3px;
     white-space: nowrap;
 }
-div.deleteButton { 
-    color: red ; 
+div.deleteButton {
+    color: red ;
     background: yellow;
     border-collapse: collapse;
     border-color: red;
@@ -519,53 +519,53 @@ div.deleteButton a:hover {
 }
 
 p.message {
-    color: #000000 ; 
-    background-color: #eeeeee ; 
+    color: #000000 ;
+    background-color: #eeeeee ;
     border: thin solid #ff0000 ;
     padding: 5px ;
 }
 p.bigbutton {
-    color: #000000 ; 
-    background-color: #eebbee ; 
+    color: #000000 ;
+    background-color: #eebbee ;
     border: thin solid #cc4400 ;
     padding: 2px ;
 }
 a.button {
-    color: #000000 ; 
-    background-color: #eebbee ; 
+    color: #000000 ;
+    background-color: #eebbee ;
     border: thin solid #cc4400 ;
     padding: 4px ;
     margin: 2px ;
 }
 
 
-tr.enabled { 
-    background-color: #ccdddd; 
-    color: #dd0000 
+tr.enabled {
+    background-color: #ccdddd;
+    color: #dd0000
 }
-tr.inactive { 
-    background-color: #eeeeee; 
-    color: #000000 
+tr.inactive {
+    background-color: #eeeeee;
+    color: #000000
 }
-tr.inactive td.servHeader a { 
-    background-color: #ccdddd; 
+tr.inactive td.servHeader a {
+    background-color: #ccdddd;
     color: #000000 ;
     padding: 0px 2px 0px 2px;
     border-style: solid;
     border-width: 1px;
 }
-tr.inactive td.servHeader a:hover { 
-    background-color: #ccdddd; 
+tr.inactive td.servHeader a:hover {
+    background-color: #ccdddd;
     color: red
 }
 
 th {
-    font-family: helvetica ; 
+    font-family: helvetica ;
     font-size: 10pt ;
 }
 
-td { 
-    font: 10px helvetica; 
+td {
+    font: 10px helvetica;
 
 }
 
@@ -577,7 +577,7 @@ table.addWidget {
 }
 
 /*table.addWidget td {
-    font: 10px helvetica; 
+    font: 10px helvetica;
     background-color: white;
     margin: 0em 0em 0em 0em;
 }
@@ -592,7 +592,7 @@ div.widgetLabel {
 input {
 /* Small cosmetic fix which makes input gadgets look nicer. */
     font: 10px Verdana, Helvetica, Arial, sans-serif;
-    border: 1px solid #8cacbb;  
+    border: 1px solid #8cacbb;
     color: Black;
     background-color: white;
     margin: 0em 0em 0em 0em;
@@ -603,11 +603,11 @@ input:hover {
 }
 
 p.copyright {
-    font-weight: bold; 
+    font-weight: bold;
     max-width: 60%;
 }
 p.license {
-    font-weight: bold; 
+    font-weight: bold;
     max-width: 60%;
 }
 

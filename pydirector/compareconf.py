@@ -1,12 +1,12 @@
 #
-# Very straightforward (brutally so) code to compare to 
+# Very straightforward (brutally so) code to compare to
 # configurations and supply a list of web api commands to
 # make the first look like the second.
 #
 # This code prefers simplicity to elegance. I want something
 # I can read clearly
 #
-# $Id: compareconf.py,v 1.1 2002/07/03 09:15:58 anthonybaxter Exp $
+# $Id: compareconf.py,v 1.2 2002/07/03 09:17:23 anthonybaxter Exp $
 #
 
 class DiffError(Exception): pass
@@ -28,14 +28,14 @@ def compareServices(oldconf, newconf):
     newservices = newconf.services.keys()
     newservices.sort()
     if oldservices != newservices:
-	# would we want to enable new services this way?
-	raise DiffError, "can't handle different services list"
+        # would we want to enable new services this way?
+        raise DiffError, "can't handle different services list"
     for serviceName in oldservices:
-	os = oldconf.services[serviceName]
-	ns = newconf.services[serviceName]
-	ret.extend(compareListeners(serviceName, os, ns))
-	ret.extend(compareGroups(serviceName, os, ns))
-	ret.extend(compareEnable(serviceName, os, ns))
+        os = oldconf.services[serviceName]
+        ns = newconf.services[serviceName]
+        ret.extend(compareListeners(serviceName, os, ns))
+        ret.extend(compareGroups(serviceName, os, ns))
+        ret.extend(compareEnable(serviceName, os, ns))
     return ret
 
 
@@ -46,15 +46,15 @@ def compareGroups(serviceName, oldservice, newservice):
     newgroups = newservice.groups.keys()
     newgroups.sort()
     if oldgroups != newgroups:
-	# maybe change this after adding 'newGroup' to the api
-	raise DiffError, \
+        # maybe change this after adding 'newGroup' to the api
+        raise DiffError, \
             "can't handle different groups list for %s"%serviceName
     for groupName in oldgroups:
-	og = oldservice.groups[groupName]
-	ng = newservice.groups[groupName]
-	ret.extend(compareHosts(serviceName, groupName, og, ng))
+        og = oldservice.groups[groupName]
+        ng = newservice.groups[groupName]
+        ret.extend(compareHosts(serviceName, groupName, og, ng))
         if og.scheduler != ng.scheduler:
-            ret.append(("changeScheduler", 
+            ret.append(("changeScheduler",
                 {'service'  : serviceName,
                  'group'    : groupName,
                  'scheduler': ng.scheduler}))
@@ -72,14 +72,14 @@ def compareHosts(serviceName, groupName, oldgroup, newgroup):
             continue
         elif host in newhosts:
             newhost = newgroup.getHost(host)
-            ret.append(("addHost", 
+            ret.append(("addHost",
                 {'service' : serviceName,
                  'group'   : groupName,
                  'ip'      : newhost.ip,
                  'name'    : newhost.name }))
         elif host in oldhosts:
             oldhost = oldgroup.getHost(host)
-            ret.append(("delHost", 
+            ret.append(("delHost",
                 {'service' : serviceName,
                  'group'   : groupName,
                  'ip'      : oldhost.ip }))
@@ -113,8 +113,8 @@ def compareAdmin(oldconf, newconf):
     if oldconf.admin is None or newconf.admin is None:
         raise DiffError, "can't handle enabling/disabling admin"
     else:
-	# we should also handle looking at the listen (and secure, 
-	# when added). needs web api commands.
+        # we should also handle looking at the listen (and secure,
+        # when added). needs web api commands.
         compareUsers(oldconf.admin.userdb, newconf.admin.userdb)
     return ret
 
@@ -131,25 +131,25 @@ def compareUsers(olduserdb, newuserdb):
             nu = newuserdb.get(user)
             if ou.password != nu.password or ou.access != nu.access:
                 # user has changed!
-                ret.append(("delUser", 
+                ret.append(("delUser",
                     {'name'     : user }))
-                ret.append(("addUser", 
+                ret.append(("addUser",
                     {'name'     : user,
                      'password' : nu.password,
                      'access'   : nu.access }))
         elif user in newusers:
             nu = newuserdb.get(user)
-            ret.append(("addUser", 
+            ret.append(("addUser",
                 {'name'     : user,
                  'password' : nu.password,
                  'access'   : nu.access }))
         elif user in oldusers:
-            ret.append(("delUser", 
+            ret.append(("delUser",
                 {'name'     : user }))
         else:
             raise DiffError, "what the hey - user %s?"%user
     return ret
-    
+
 
 def compareLogging(oldconf, newconf):
     ret = []
@@ -158,7 +158,7 @@ def compareLogging(oldconf, newconf):
 
 if __name__ == "__main__":
     import sys
-    ret = diffXML(open(sys.argv[1]).read(), 
-		  open(sys.argv[2]).read())
+    ret = diffXML(open(sys.argv[1]).read(),
+                  open(sys.argv[2]).read())
     ret.sort()
     for r in ret: print r

@@ -1,8 +1,8 @@
-#   
+#
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
-#   
-# $Id: pdmanager.py,v 1.2 2002/07/01 05:30:00 anthonybaxter Exp $
+#
+# $Id: pdmanager.py,v 1.3 2002/07/03 09:17:23 anthonybaxter Exp $
 #
 
 import sys
@@ -41,6 +41,6 @@ class SchedulerManager(object):
             when,what = badhosts[bh]
             if now > when + self.checktime:
                 print "time to re-check", bh
-		name = scheduler.getHostNames()[bh]
+                name = scheduler.getHostNames()[bh]
                 del badhosts[bh]
                 scheduler.newHost(bh, name)

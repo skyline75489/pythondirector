@@ -1,8 +1,8 @@
 #
-# Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com) 
+# Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdlogging.py,v 1.2 2002/07/03 05:28:43 anthonybaxter Exp $
+# $Id: pdlogging.py,v 1.3 2002/07/03 09:17:23 anthonybaxter Exp $
 #
 
 Logger=None
@@ -15,9 +15,9 @@ import sys
 # look at replacing this later
 class _LoggerClass:
     def __init__(self, logfile=None):
-	self.logfile = logfile
-	self.fp = None
-	self.reopen()
+        self.logfile = logfile
+        self.fp = None
+        self.reopen()
 
     def reopen(self):
         if self.logfile is not None and self.fp is not None:
@@ -28,8 +28,8 @@ class _LoggerClass:
             self.fp = open(self.logfile, 'a')
 
     def log(self, message):
-	self.fp.write(message)
-	self.fp.flush()
+        self.fp.write(message)
+        self.fp.flush()
 
 def initlog(filename):
     global Logger
@@ -44,4 +44,3 @@ def reload():
     global Logger
     if Logger is None: Logger = _LoggerClass()
     Logger.reload()
-

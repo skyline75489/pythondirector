@@ -1,8 +1,8 @@
 #
-# Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com) 
+# Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdmain.py,v 1.2 2002/07/01 05:33:44 anthonybaxter Exp $
+# $Id: pdmain.py,v 1.3 2002/07/03 09:17:23 anthonybaxter Exp $
 #
 
 import sys
@@ -75,4 +75,3 @@ class PythonDirector(object):
         eg = serviceConf.getEnabledGroup()
         scheduler = self.getScheduler(serviceName, eg.name)
         self.listeners[serviceName].scheduler = scheduler
-
