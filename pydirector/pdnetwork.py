@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdnetwork.py,v 1.6 2002/07/03 09:17:23 anthonybaxter Exp $
+# $Id: pdnetwork.py,v 1.7 2002/07/23 01:43:03 anthonybaxter Exp $
 #
 
 import asyncore, asynchat, socket, sys, errno
@@ -186,4 +186,4 @@ class Sender(asynchat.async_chat):
 
     def log_info (self, message, type='info'):
         if __debug__ or type != 'info':
-            pdlogging.log('%s: %s\n' % (type, message))
+            pdlogging.log('%s: %s\n' % (type, message), datestamp=1)

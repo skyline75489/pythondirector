@@ -2,14 +2,14 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdschedulers.py,v 1.6 2002/07/03 09:17:23 anthonybaxter Exp $
+# $Id: pdschedulers.py,v 1.7 2002/07/23 01:43:03 anthonybaxter Exp $
 #
 
 import sys
 if sys.version_info < (2,2):
     class object: pass
 
-import pdconf
+import pdconf, pdlogging
 
 def createScheduler(groupConfig):
     schedulerName = groupConfig.scheduler
@@ -130,6 +130,8 @@ class BaseScheduler:
         from time import time
         t,host = self.open[s_id]
         if host in self.hosts:
+            pdlogging.log("marking host %s down (%s)"%(str(host), reason), 
+                            datestamp=1)
             self.hosts.remove(host)
         if self.openconns.has_key(host):
             del self.openconns[host]

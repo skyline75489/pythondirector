@@ -2,14 +2,14 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdlogging.py,v 1.3 2002/07/03 09:17:23 anthonybaxter Exp $
+# $Id: pdlogging.py,v 1.4 2002/07/23 01:43:03 anthonybaxter Exp $
 #
 
 Logger=None
 
 from asyncore import compact_traceback
 
-import sys
+import sys, time
 
 
 # look at replacing this later
@@ -27,18 +27,30 @@ class _LoggerClass:
         else:
             self.fp = open(self.logfile, 'a')
 
-    def log(self, message):
-        self.fp.write(message)
+    def log(self, message, datestamp=0):
+        if datestamp:
+            self.fp.write("%s %s"%(self.log_date_time_string,message))
+        else:
+            self.fp.write(message)
         self.fp.flush()
+
+    def log_date_time_string(self):
+        """Return the current time formatted for logging."""
+        now = time.time()
+        year, month, day, hh, mm, ss, x, y, z = time.localtime(now)
+        s = "%02d/%02d/%04d %02d:%02d:%02d" % (
+                day, month, year, hh, mm, ss)
+        return s
+
 
 def initlog(filename):
     global Logger
     Logger = _LoggerClass(filename)
 
-def log(message):
+def log(message, datestamp=0):
     global Logger
     if Logger is None: Logger = _LoggerClass()
-    Logger.log(message)
+    Logger.log(message, datestamp)
 
 def reload():
     global Logger
