@@ -3,12 +3,12 @@
 <!-- 
      I need to remember how to do DTD magic to make sure this is 
      actually doing all the stuff it can do. 
-$Id: pythondirector.dtd,v 1.2 2002/07/04 08:23:49 anthonybaxter Exp $
+$Id: pythondirector.dtd,v 1.3 2002/07/08 00:32:24 anthonybaxter Exp $
 -->
 
 <!ELEMENT pdconfig (service+, admin, logging)>
 
-<!ELEMENT service (listen, group+, enable)>
+<!ELEMENT service (listen+, group+, enable)>
 <!ATTLIST service name CDATA #REQUIRED>
 
 <!ELEMENT listen EMPTY>

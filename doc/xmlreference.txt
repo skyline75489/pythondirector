@@ -21,7 +21,7 @@ A Python Director config consists of a number of XML directives.
   Attributes:
     name - the name of this service. A text label.
   Children:
-    Must contain one <listen> node.
+    Must contain one or more <listen> nodes.
     Must contain one or more <group> nodes.
     Must contain one <enable> node (after the <group> nodes)
   Other notes:
@@ -34,7 +34,7 @@ A Python Director config consists of a number of XML directives.
   Children:
     No children.
   Other notes:
-    No reason a service couldn't have multiple listen ports (future work)
+    A service can listen on multiple host:ip ports.
 
 <group> - a group of backend servers
   Child of: <service>

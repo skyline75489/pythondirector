@@ -40,7 +40,8 @@ These are a group of backend servers and the description of how to
 distribute hits between them. Only one group can be active at a time.
 You'd use multiple groups, for instance, to specify a set of main 
 hosts, and a set of backup hosts to use when the main hosts are 
-undergoing maintenance.
+undergoing maintenance. You don't need to specify more than one 
+group, but it is useful.
 
 Finally, there should be an 'enable' directive that specifies which
 group starts off enabled. 
