@@ -50,7 +50,8 @@ The admin section controls the administrative web interface. If you
 don't have an admin section, there will be no admin web interface
 started - as a result, you'll have to re-start the python director
 to make any changes. The admin directive takes a listen argument to
-specify what address to listen for connections.
+specify what address to listen for connections. Use either '*' or 
+'0.0.0.0' to mean 'listen on all addresses'.
 
 Inside the admin section are one or more 'user' entries. These have
 attributes 'name' (the login name), 'password' (the unix crypt password,

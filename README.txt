@@ -73,6 +73,10 @@ twisted reactor loop.
 
 Changes from 0.0.6 to 0.0.???RELEASE???
 
+- You can specify a hostname of '*' to the listen directive for both
+  the scheduler and the administrative interface to mean 'listen on
+  all interfaces'. Considerably more obvious than '0.0.0.0'. Thanks
+  to Andrew Sydelko for the idea.
 - New "leastconnsrr" scheduler - this is leastconns, with a roundrobin
   as well. Previously, leastconns would keep the list of hosts sorted,
   which often meant one system got beaten up pretty badly.
