@@ -1,3 +1,10 @@
+Things to complete before 0.1:
+   delHost
+   addUser
+   delUser
+   doco? 
+
+Write a client that does the running.xml vs current config deltas.
 
 Lots and lots more documentation
 
