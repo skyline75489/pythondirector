@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com) 
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdlogging.py,v 1.1 2002/07/01 08:52:22 anthonybaxter Exp $
+# $Id: pdlogging.py,v 1.2 2002/07/03 05:28:43 anthonybaxter Exp $
 #
 
 Logger=None
@@ -29,6 +29,7 @@ class _LoggerClass:
 
     def log(self, message):
 	self.fp.write(message)
+	self.fp.flush()
 
 def initlog(filename):
     global Logger
