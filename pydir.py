@@ -13,7 +13,7 @@ def main():
     resource.setrlimit(resource.RLIMIT_NOFILE, (1024, 1024))
     config = sys.argv[1]
     pd = PythonDirector(config)
-    pd.start()
+    pd.start(profile=0)
 
 if __name__ == "__main__":
     versionCheck()
@@ -23,5 +23,5 @@ if __name__ == "__main__":
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pydir.py,v 1.8 2003/04/30 06:07:30 anthonybaxter Exp $
+# $Id: pydir.py,v 1.9 2003/04/30 08:24:35 anthonybaxter Exp $
 #

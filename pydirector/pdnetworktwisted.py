@@ -4,7 +4,7 @@
 #
 # Networking core - twisted version (http://www.twistedmatrix.com)
 #
-# $Id: pdnetworktwisted.py,v 1.5 2003/04/30 06:13:40 anthonybaxter Exp $
+# $Id: pdnetworktwisted.py,v 1.6 2003/04/30 08:24:37 anthonybaxter Exp $
 #
 
 from twisted.internet.protocol import ServerFactory, ClientFactory, Protocol
@@ -201,7 +201,7 @@ class ReceiverFactory(ServerFactory):
         self.bindport = bindport
         self.scheduler = scheduler
 
-def mainloop(timeout=None):
+def mainloop(timeout=5):
     " run the main loop "
     #print "running mainloop"
     reactor.run()

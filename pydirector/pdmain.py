@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdmain.py,v 1.7 2003/04/30 06:01:29 anthonybaxter Exp $
+# $Id: pdmain.py,v 1.8 2003/04/30 08:24:37 anthonybaxter Exp $
 #
 
 import sys
@@ -20,7 +20,7 @@ class PythonDirector(object):
         self.createManager()
         self.createListeners()
 
-    def start(self):
+    def start(self, profile=0):
         import sys
         from pydirector import pdadmin
         from pdnetwork import mainloop
@@ -28,7 +28,17 @@ class PythonDirector(object):
             pdadmin.start(adminconf=self.conf.admin, director=self)
         self.manager.start()
         try:
-            mainloop(timeout=4)
+	    if profile:
+		import hotshot
+		print "creating profiling log"
+		prof = hotshot.Profile("pydir.prof")
+		try:
+		    prof.runcall(mainloop)
+		finally:
+		    print "closing profile log"
+		    prof.close()
+	    else:
+		mainloop(timeout=4)
         except KeyboardInterrupt:
             sys.exit(0)
 
