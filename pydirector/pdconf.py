@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdconf.py,v 1.8 2002/07/03 11:15:34 anthonybaxter Exp $
+# $Id: pdconf.py,v 1.9 2002/07/04 04:09:39 anthonybaxter Exp $
 #
 
 import sys
@@ -47,6 +47,9 @@ class PDGroup(object):
     def getHost(self,name):
         return self.hosts[name]
 
+    def getHostNamess(self):
+        return self.hosts.keys()
+
     def getHosts(self):
         return self.hosts.values()
 
@@ -69,30 +72,33 @@ class PDService(object):
         newgroup = PDGroup(groupName)
         newgroup.scheduler = groupobj.getAttribute('scheduler')
         cc = 0
-        for client in groupobj.childNodes:
-            if client.nodeName == "#text": continue
-            if client.nodeName != u'client':
+        for host in groupobj.childNodes:
+            if host.nodeName == "#text": continue
+            if host.nodeName != u'host':
                 raise ConfigError, \
-                    "expected 'client', got '%s'"%client.nodeName
-            name = client.getAttribute('name')
-            if not name: name = 'client.%s'%cc
-            newgroup.addHost(name, client.getAttribute('ip'))
+                    "expected 'host', got '%s'"%host.nodeName
+            name = host.getAttribute('name')
+            if not name: name = 'host.%s'%cc
+            newgroup.addHost(name, host.getAttribute('ip'))
             cc += 1
         self.groups[groupName] = newgroup
 
     def getGroup(self, groupName):
         return self.groups.get(groupName)
 
-    def getEnabledGroup(self):
-        return self.groups.get(self.enabledgroup)
-
     def getGroups(self):
         return self.groups.values()
+
+    def getGroupNames(self):
+        return self.groups.keys()
+
+    def getEnabledGroup(self):
+        return self.groups.get(self.enabledgroup)
 
     def checkSanity(self):
         if not self.name: raise ServiceError, "no name set"
         if not self.listen: raise ServiceError, "no listen address set"
-        if not self.groups: raise ServiceError, "no client groups"
+        if not self.groups: raise ServiceError, "no host groups"
         if not self.enabledgroup: raise ServiceError, "no group enabled"
         if not self.groups.get(self.enabledgroup): raise GroupError, \
                     "enabled group '%s' not defined"%self.enabledgroup
@@ -101,7 +107,7 @@ class PDService(object):
             if not group.scheduler: raise GroupError, \
                     "no scheduler set for %s"%group.name
             if not group.hosts: raise GroupError, \
-                    "no clients set for %s"%group.name
+                    "no hosts set for %s"%group.name
 
 class PDAdminUser(object):
     __slots__ = [ 'name', 'password', 'access' ]
@@ -129,13 +135,8 @@ class PDAdmin(object):
     __slots__ = [ 'listen', 'userdb', 'secure' ]
     def __init__(self):
         self.listen = None
+        self.secure = None
         self.userdb = {}
-
-    def addUserFromDOM(self, user):
-        name = user.getAttribute('name')
-        password = user.getAttribute('password')
-        access = user.getAttribute('access')
-        self.addUser(name, password, access)
 
     def addUser(self, name, password, access):
         u = PDAdminUser()
@@ -151,11 +152,21 @@ class PDAdmin(object):
         else:
             return 0
 
-    def getUsers(self):
-        return self.userdb.values()
+    def loadUser(self, userobj):
+        name = userobj.getAttribute('name')
+        password = userobj.getAttribute('password')
+        access = userobj.getAttribute('access')
+        self.addUser(name, password, access)
 
     def getUser(self, name):
         return self.userdb.get(name)
+
+    def getUsers(self):
+        return self.userdb.values()
+
+    def getUserNames(self):
+        return self.userdb.keys()
+
 
 class PDConfig(object):
     __slots__ = [ 'services', 'admin', 'dom' ]
@@ -199,7 +210,7 @@ class PDConfig(object):
         for user in admin.childNodes:
             if user.nodeName == "#text": continue
             if user.nodeName == u'user':
-                adminServer.addUserFromDOM(user)
+                adminServer.loadUser(user)
             else:
                 raise ConfigError, "only expect to see users in admin block"
         self.admin = adminServer
@@ -209,6 +220,9 @@ class PDConfig(object):
 
     def getServices(self):
         return self.services.values()
+
+    def getServiceNames(self):
+        return self.services.keys()
 
     def loadService(self, service):
         serviceName = service.getAttribute('name')

@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdadmin.py,v 1.10 2002/07/03 11:15:34 anthonybaxter Exp $
+# $Id: pdadmin.py,v 1.11 2002/07/04 04:09:39 anthonybaxter Exp $
 #
 
 import sys
@@ -235,14 +235,14 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
                 hosts = group.getHosts()
                 hdict = sch.getHostNames()
                 counts = stats['open']
-                clients = counts.keys() # clients is now a list of active hosts
+                ahosts = counts.keys() # ahosts is now a list of active hosts
                 # now add disabled hosts.
                 for k in stats['bad'].keys():
-                    clients.append('%s:%s'%k)
-                clients.sort()
-                for h in clients:
+                    ahosts.append('%s:%s'%k)
+                ahosts.sort()
+                for h in ahosts:
                     xg.appendChild(doc.createTextNode("\n            "))
-                    xh = doc.createElement("client")
+                    xh = doc.createElement("host")
                     xh.setAttribute('name', hdict[h])
                     xh.setAttribute('ip', h)
                     xg.appendChild(xh)
