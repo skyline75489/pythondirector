@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdnetwork.py,v 1.2 2002/07/01 05:33:44 anthonybaxter Exp $
+# $Id: pdnetwork.py,v 1.3 2002/07/01 06:51:00 anthonybaxter Exp $
 #   
 
 import asyncore, asynchat, socket, sys, errno
@@ -114,7 +114,7 @@ class Sender(asynchat.async_chat):
             self.dest = dest
             try:
                 self.connect(self.dest)
-            except (socket.error, socket.gaierror):
+            except:
                 self.handle_error()
         else:
             self.log_info("NO WORKING HOSTS!", 'fatal')
@@ -148,7 +148,7 @@ class Sender(asynchat.async_chat):
                 return
             else:
                 what = " (%s)"%errno.errorcode[v[0]]
-        elif e is socket.gaierror:
+        elif hasattr(socket, 'gaierror') and e is socket.gaierror:
             if v[0] == -2:
                 self.dead_server(retry=1, reason="unknown_name")
                 return
