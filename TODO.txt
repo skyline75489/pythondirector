@@ -32,6 +32,8 @@ Admin interface bits left to do:
     mark a host as administratively up/down?
     [maybe] shutdown?
 
+add a 'autorefresh' to /running
+
 Document the various return results from the text mode interfaces - 
 eg running.txt
 
@@ -56,3 +58,5 @@ what does 'host unknown' raise under 2.1?
 
 Clean up all the logging. Logging now goes to a single place, but in
 inconsistent format. Still, it's better.
+
+Track the count of faults.
