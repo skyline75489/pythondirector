@@ -70,6 +70,19 @@ Admin interface:
 
 ----------------------------------------------------------------------
 
+Changes from 0.0.3 to 0.0.4-notyet-done:
+
+- 'client' in the config XML is now 'host'
+- fixed a bug in leastconns and roundrobin scheduler if all backends
+  were unavailable.
+- whole lotta documentation added.
+- running display in web api now shows count of total connections
+- running display now has refresh and auto-refresh
+- compareconf module - takes a running config and a new config and
+  emits the web api commands needed to make the running config match
+  the new config
+- first cut at enabling https for web interface (needs m2crypto)
+
 Changes from 0.0.2 to 0.0.3:
 
 - delHost hooked up

@@ -1,3 +1,9 @@
+2002-07-04 14:09  anthonybaxter
+
+	* pydirector/: pdadmin.py, pdconf.py: renamed 'client' to 'host' in
+	config all config objects now support getFoo(name), getFoos(), and
+	getFooNames() (where they have children)
+
 2002-07-03 21:15  anthonybaxter
 
 	* pydirector/: pdadmin.py, pdconf.py: implemented addUser/delUser. 

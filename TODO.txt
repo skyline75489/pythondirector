@@ -54,7 +54,8 @@ additional schedulers.
 
 better testing stuff in SchedulerManager, rather than just dropping the
 dead entry back into the mix. In the case of "it's down", this is harmless,
-but nonetheless.
+but nonetheless. Store away more info about the down hosts - when, how long
+til next test, &c.
 
 expires on the CSS.
 
@@ -74,3 +75,5 @@ Track the count of faults.
 If M2Crypto is installed, allow a https-based admin interface. Sort-of
 there now, use the undocumented 'secure="yes"' flag to the admin directive.
 
+Additional idea: connection count scheduler. could be used to track 
+licensing of a service, or limit it.
