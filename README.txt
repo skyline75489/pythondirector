@@ -1,4 +1,4 @@
-README for pythondirector 0.0.6+
+README for pythondirector 0.0.7
 
 This is a pure python TCP load balancer. It takes inbound TCP
 connections and connects them to one of a number of backend
@@ -71,7 +71,7 @@ twisted reactor loop.
 
 ----------------------------------------------------------------------
 
-Changes from 0.0.6 to 0.0.???RELEASE???
+Changes from 0.0.6 to 0.0.7
 
 - You can specify a hostname of '*' to the listen directive for both
   the scheduler and the administrative interface to mean 'listen on
@@ -142,7 +142,7 @@ Changes from 0.0.1 to 0.0.2:
 
 This software is covered by the following license:
 
-Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com/) 
+Copyright (c) 2002-2003 ekit.com Inc (http://www.ekit-inc.com/) 
 and Anthony Baxter <anthony@interlink.com.au>
 
 Permission is hereby granted, free of charge, to any person obtaining a
