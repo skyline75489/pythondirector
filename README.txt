@@ -1,4 +1,4 @@
-README for pythondirector
+README for pythondirector 0.0.4
 
 This is a pure python TCP load balancer. It takes inbound TCP
 connections and connects them to one of a number of backend
@@ -31,46 +31,11 @@ Features:
 
 API (web based):
 
-Admin interface: 
-
-  running / running.txt 
-    current configuration and status of the PD (HTML / text)
-
-  config.xml - 
-    initial config of the PD (xml)
-
-  running.xml
-    current running config of the PD (xml)
-
-  Host mgmt:
-    addHost?service=NNN&group=NNN&ip=NNN:n -
-        add a new host to the group of a service
-    delHost?service=NNN&group=NNN&name=NNN:n -
-        remove a host from the group of a service
-    delAllHosts?service=NNN&group=NNN -
-        remove all hosts from the group of a service
-
-    Note that the last two will not let you remove all hosts
-    from the enabled group.
-
-  group mgmt:
-    enableGroup?service=NNN&group=NNN -
-        switch the currently enabled group. Note that this will
-        not affect any in-progress connections.
-
-    changeScheduler?service=NNN&group=NNN&scheduler=NNN
-
-  user mgmt:
-    addUser
-    delUser
-
-  service mgmt:
-    
-  others:
+    See doc/webapi.txt for a full list of web api commands
 
 ----------------------------------------------------------------------
 
-Changes from 0.0.3 to 0.0.4-notyet-done:
+Changes from 0.0.3 to 0.0.4:
 
 - can now specify more than one listener for a service
 - 'client' in the config XML is now 'host'
