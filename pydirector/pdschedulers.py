@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdschedulers.py,v 1.9 2002/11/26 05:50:54 anthonybaxter Exp $
+# $Id: pdschedulers.py,v 1.10 2003/04/30 06:02:32 anthonybaxter Exp $
 #
 
 import sys
@@ -85,7 +85,11 @@ class BaseScheduler:
         return self.hostnames
 
     def doneHost(self, s_id):
-        t,host = self.open[s_id]
+	try:
+	    t,host = self.open[s_id]
+	except KeyError:
+	    #print "Couldn't find %s in %s"%(repr(s_id), repr(self.open.keys()))
+	    return
         del self.open[s_id]
         cur = self.openconns.get(host)
         if cur is not None:
