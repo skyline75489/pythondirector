@@ -48,7 +48,9 @@ logging options?
 Document the various return results from the text mode interfaces - 
 eg running.txt
 
-Experiment with andy dustman's C code replacement for asyncore.poll()
+Experiment with andy dustman's C code replacement for asyncore.poll(). 
+Initial experiments show it's bit rotted a bit - will have to find round
+tuits later.
 
 additional schedulers.
 
@@ -77,3 +79,9 @@ there now, use the undocumented 'secure="yes"' flag to the admin directive.
 
 Additional idea: connection count scheduler. could be used to track 
 licensing of a service, or limit it.
+
+Figure out a way to restart/upgrade pydir. Idea: close down listener, start
+new code immediately. Let old connections on old pydir finish (run to 
+completion) before exiting.
+
+
