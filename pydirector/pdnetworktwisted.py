@@ -4,12 +4,14 @@
 #
 # Networking core - twisted version (http://www.twistedmatrix.com)
 #
-# $Id: pdnetworktwisted.py,v 1.3 2002/11/26 05:50:54 anthonybaxter Exp $
+# $Id: pdnetworktwisted.py,v 1.4 2003/04/30 06:03:50 anthonybaxter Exp $
 #
 
 from twisted.internet.protocol import ServerFactory, ClientFactory, Protocol
 from twisted.internet import reactor
 import twisted.internet
+
+import pdlogging
 
 
 
@@ -68,7 +70,7 @@ class Sender(Protocol):
     def dataReceived(self, data):
         #print "client data", len(data)
         if self.receiver is None:
-            print "client got data, no receiver, tho"
+            pdlogging.log("client got data, no receiver, tho\n", datestamp=1)
         else:
             self.receiver.transport.write(data)
 
@@ -116,10 +118,13 @@ class SenderFactory(ClientFactory):
         self.receiver.factory.scheduler.deadHost(self, reason)
         next =  self.receiver.factory.scheduler.getHost(self)
         if next:
+            pdlogging.log("retrying with %s\n"%repr(next), datestamp=1)
             host, port = next
-            #print "retrying", host, port
             reactor.connectTCP(host, port, self)
         else:
+            # No working servers!?
+            pdlogging.log("no working servers, manager -> aggressive\n", 
+                          datestamp=1)
             self.receiver.transport.loseConnection()
 
     def stopFactory(self):
@@ -141,6 +146,9 @@ class Receiver(Protocol):
         if dest:
             host, port = dest
             sender = reactor.connectTCP(host, port, sender)
+        else:
+            #print "(still) no working servers!"
+            self.transport.loseConnection()
 
     def setSender(self, sender):
         "the sender side of the proxy is connected"
