@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdnetwork.py,v 1.7 2002/07/23 01:43:03 anthonybaxter Exp $
+# $Id: pdnetwork.py,v 1.8 2002/07/23 04:25:51 anthonybaxter Exp $
 #
 
 import asyncore, asynchat, socket, sys, errno
@@ -31,8 +31,15 @@ class Listener(asyncore.dispatcher):
         # don't accept if no backends available!
         who = self.accept()
         #print "got connection from", who
-        r = Receiver(self, who, self.scheduler)
-        r.go()
+        try:
+            # it's critical that the listener is not killed by
+            # exceptions from the Receivers or Senders
+            r = Receiver(self, who, self.scheduler)
+            r.go()
+        except:
+            nil, t, v, tbinfo = asyncore.compact_traceback()
+            pdlogging.log('Listener: %s %s %s\n'%
+                            (str(t), str(v), str(tbinfo)), datestamp=1)
 
 class Receiver(asynchat.async_chat):
     """ A Receiver is created when a new inbound connection
@@ -185,5 +192,4 @@ class Sender(asynchat.async_chat):
         pdlogging.log(message)
 
     def log_info (self, message, type='info'):
-        if __debug__ or type != 'info':
-            pdlogging.log('%s: %s\n' % (type, message), datestamp=1)
+        pdlogging.log('%s: %s\n' % (type, message), datestamp=1)
