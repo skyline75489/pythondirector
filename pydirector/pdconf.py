@@ -2,7 +2,7 @@
 # Copyright (c) 2002-2003 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdconf.py,v 1.16 2003/10/09 08:53:42 anthonybaxter Exp $
+# $Id: pdconf.py,v 1.17 2004/08/18 05:36:50 anthonybaxter Exp $
 #
 
 import sys
@@ -177,6 +177,7 @@ class PDConfig(object):
     __slots__ = [ 'services', 'admin', 'dom' ]
 
     def __init__(self, filename=None, xml=None):
+        import pdlogging
         self.services = {}
         self.admin = None
         dom = self._loadDOM(filename, xml)
@@ -196,7 +197,6 @@ class PDConfig(object):
                 else:
                     raise ConfigError, "only one 'admin' block allowed"
             elif item.nodeName == u'logging':
-                import pdlogging
                 pdlogging.initlog(item.getAttribute('file'))
 
     def _loadDOM(self, filename, xml):
