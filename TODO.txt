@@ -9,6 +9,9 @@ Things to complete before 0.1:
     more doco
     write a client that compares config xml and running xml, and updates
       the latter to match the former. mostly there now, see compareconf
+    Figure out a way to restart/upgrade pydir. Idea: close down listener, start
+      new code immediately. Let old connections on old pydir finish (run to 
+      completion) before exiting.
 
 Lots and lots more documentation
 
@@ -77,8 +80,5 @@ there now, use the undocumented 'secure="yes"' flag to the admin directive.
 Additional idea: connection count scheduler. could be used to track 
 licensing of a service, or limit it.
 
-Figure out a way to restart/upgrade pydir. Idea: close down listener, start
-new code immediately. Let old connections on old pydir finish (run to 
-completion) before exiting.
 
 
