@@ -1,9 +1,9 @@
 Things to complete before 0.1:
-   addUser
-   delUser
-   doco? 
-
-Write a client that does the running.xml vs current config deltas.
+    addUser
+    delUser
+    more doco
+    write a client that compares config xml and running xml, and updates
+    the latter to match the former. mostly there now, see compareconf
 
 Lots and lots more documentation
 
@@ -26,6 +26,7 @@ Admin interface bits left to do:
   service mgmt:
     newService?service=NNN&listen=NNN
     newGroup?service=NNN&group=NNN&scheduler=NNN
+    delGroup?service=NNN&group=NNN
   other
     closeLog
     retryHost?service=NNN&group=NNN&client=NNN
