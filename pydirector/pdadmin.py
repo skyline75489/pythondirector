@@ -2,7 +2,7 @@
 # Copyright (c) 2002 ekit.com Inc (http://www.ekit-inc.com) 
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdadmin.py,v 1.5 2002/07/02 05:58:18 anthonybaxter Exp $
+# $Id: pdadmin.py,v 1.6 2002/07/02 06:55:17 anthonybaxter Exp $
 #
 
 import sys
@@ -346,7 +346,19 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
         self.wfile.write("OK\n")
 
     def pdadmin_delHost(self, service, group, ip, Access='Write'):
-        self.action_done('not implemented yet')
+        sched = self.director.getScheduler(serviceName=service, groupName=group)
+        service = self.director.conf.getService(service)
+        eg = service.getEnabledGroup()
+        if group == eg.name:
+            if sched.delHost(ip=ip, activegroup=1):
+                self.action_done('host %s deleted (from active group!)'%ip)
+            else:
+                self.action_done('host %s <b>not</b> deleted from active group'%ip)
+        else:
+            if sched.delHost(ip=ip):
+                self.action_done('host %s deleted from inactive group'%ip)
+            else:
+                self.action_done('host %s <b>not</b> deleted from inactive group'%ip)
         self.wfile.write("OK\n")
 
     def pdadmin_delAllHosts(self, service, group, Access='Write'):
