@@ -1,3 +1,54 @@
+2003-10-09 18:20  anthonybaxter
+
+	* README.txt, doc/pythondirector.dtd, doc/schedulers.txt,
+	pydirector/pdschedulers.py: Added 'leastconnsrr' scheduler. May end
+	up deprecating/removing the existing leastconns scheduler, as the
+	new one is far far better.
+
+2003-08-18 13:24  anthonybaxter
+
+	* pydirector/pdnetworktwisted.py: actually change the scheduler
+	when requested.
+
+2003-05-02 19:26  anthonybaxter
+
+	* pydirector/pdconf.py: force backend server addresses to be ascii
+	strings - avoids some internal processing by python.
+
+2003-05-01 14:28  anthonybaxter
+
+	* pydirector/: pdmain.py, pdnetworkasyncore.py,
+	pdnetworktwisted.py: whitespace n18n
+
+2003-05-01 14:26  anthonybaxter
+
+	* pydirector/pdschedulers.py: debugging print left in.
+
+2003-04-30 18:41  anthonybaxter
+
+	* README.txt, TODO.txt, pydirector/pdnetworkasyncore.py,
+	pydirector/pdnetworktwisted.py, pydirector/pdschedulers.py: first
+	bunch of changes to allow "sticky" schedulers, where a client is
+	sent to the same server each time (by preference). No actual
+	scheduler or config support is there yet.
+
+2003-04-30 18:24  anthonybaxter
+
+	* pydir.py, pydirector/pdmain.py, pydirector/pdnetworktwisted.py:
+	optional profile (hotshot) support
+
+2003-04-30 16:41  anthonybaxter
+
+	* MANIFEST.in: add dtd to package.
+
+2003-04-30 16:40  anthonybaxter
+
+	* doc/ChangeLog: [no log message]
+
+2003-04-30 16:38  anthonybaxter
+
+	* README.txt, pydirector/__init__.py: pre-release dance.
+
 2003-04-30 16:35  anthonybaxter
 
 	* pydirector/pdconf.py: damn. stupid braino.
@@ -110,12 +161,12 @@
 
 2002-11-25 13:29  anthonybaxter
 
-	* pydirector/: pdnetwork.py, pdnetworkasyncore.py: renamed
+	* pydirector/pdnetworkasyncore.py: file pdnetworkasyncore.py was
+	initially added on branch twisted_branch.
 
 2002-11-25 13:29  anthonybaxter
 
-	* pydirector/pdnetworkasyncore.py: file pdnetworkasyncore.py was
-	initially added on branch twisted_branch.
+	* pydirector/: pdnetwork.py, pdnetworkasyncore.py: renamed
 
 2002-11-25 13:27  anthonybaxter
 
@@ -481,11 +532,11 @@
 
 	* README.txt, TODO.txt, confex.xml, pdadmin.py, pdconf.py,
 	pdmanager.py, pdnetwork.py, pdschedulers.py, pydir.py,
-	doc/ChangeLog.preSF, doc/LICENSE.txt: Initial revision
+	doc/ChangeLog.preSF, doc/LICENSE.txt: Initial SF checkin.
 
 2002-06-21 13:54  anthonybaxter
 
 	* README.txt, TODO.txt, confex.xml, pdadmin.py, pdconf.py,
 	pdmanager.py, pdnetwork.py, pdschedulers.py, pydir.py,
-	doc/ChangeLog.preSF, doc/LICENSE.txt: Initial SF checkin.
+	doc/ChangeLog.preSF, doc/LICENSE.txt: Initial revision
 
