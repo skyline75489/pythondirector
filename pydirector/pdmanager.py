@@ -2,14 +2,14 @@
 # Copyright (c) 2002-2004 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdmanager.py,v 1.10 2004/12/14 13:31:39 anthonybaxter Exp $
+# $Id: pdmanager.py,v 1.11 2006/03/16 07:11:27 anthonybaxter Exp $
 #
 
 import sys
 if sys.version_info < (2,2):
     class object: pass
 
-import pdconf, pdlogging
+import pdlogging
 
 
 class SchedulerManager(object):
