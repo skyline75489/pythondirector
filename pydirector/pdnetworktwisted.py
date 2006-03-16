@@ -4,7 +4,7 @@
 #
 # Networking core - twisted version (http://www.twistedmatrix.com)
 #
-# $Id: pdnetworktwisted.py,v 1.11 2004/12/14 13:31:39 anthonybaxter Exp $
+# $Id: pdnetworktwisted.py,v 1.12 2006/03/16 07:10:36 anthonybaxter Exp $
 #
 
 from twisted.internet.protocol import ServerFactory, ClientFactory, Protocol
@@ -58,7 +58,7 @@ class Sender(Protocol):
         """
         if self.receiver is not None:
             if reason.type is twisted.internet.error.ConnectionDone:
-                return
+                pass
             elif reason.type is twisted.internet.error.ConnectionLost:
                 pass
             else:
