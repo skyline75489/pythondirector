@@ -2,7 +2,7 @@
 # Copyright (c) 2002-2004 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdconf.py,v 1.18 2004/12/14 13:31:39 anthonybaxter Exp $
+# $Id: pdconf.py,v 1.19 2006/03/16 07:10:41 anthonybaxter Exp $
 #
 
 import sys
@@ -125,7 +125,6 @@ class PDAdminUser(object):
             return 0
 
     def checkAccess(self, methodObj, argdict):
-        from inspect import getargspec
         a = getDefaultArgs(methodObj)
         required = a.get('Access', 'NoAccess')
         if required == "Read" and self.access in ('full', 'readonly'):
@@ -174,12 +173,13 @@ class PDAdmin(object):
 
 
 class PDConfig(object):
-    __slots__ = [ 'services', 'admin', 'dom' ]
+    __slots__ = [ 'services', 'admin', 'dom', 'logging_file' ]
 
     def __init__(self, filename=None, xml=None):
         import pdlogging
         self.services = {}
         self.admin = None
+        self.logging_file = None
         dom = self._loadDOM(filename, xml)
         if dom.nodeName != 'pdconfig':
             raise ConfigError, "expected top level 'pdconfig', got '%s'"%(
@@ -197,6 +197,7 @@ class PDConfig(object):
                 else:
                     raise ConfigError, "only one 'admin' block allowed"
             elif item.nodeName == u'logging':
+                self.logging_file = item.getAttribute('file')
                 pdlogging.initlog(item.getAttribute('file'))
 
     def _loadDOM(self, filename, xml):
@@ -247,6 +248,88 @@ class PDConfig(object):
                 raise ConfigError, "unknown node '%s'"%c.nodeName
         newService.checkSanity()
         self.services[serviceName] = newService
+
+    def setLoggingFile(self, filename):
+        self.logging_file = filename
+        #import pdlogging
+        #pdlogging.initlog(self.logging_file)
+
+    def toxml(self, verbose=0):
+        from xml.dom.minidom import Document
+        doc = Document()
+        top = doc.createElement("pdconfig")
+        doc.appendChild(top)
+
+        # first, services
+        for service in self.getServices():
+            top.appendChild(doc.createTextNode("\n    "))
+            serv = doc.createElement("service")
+            serv.setAttribute('name', service.name)
+            top.appendChild(serv)
+            for l in service.listen:
+                serv.appendChild(doc.createTextNode("\n        "))
+                lobj = doc.createElement("listen")
+                lobj.setAttribute('ip', l)
+                serv.appendChild(lobj)
+            groups = service.getGroups()
+            for group in groups:
+                serv.appendChild(doc.createTextNode("\n        "))
+                sch = self.director.getScheduler(service.name, group.name)
+                xg = doc.createElement("group")
+                xg.setAttribute('name', group.name)
+                xg.setAttribute('scheduler', sch.schedulerName)
+                serv.appendChild(xg)
+                stats = sch.getStats(verbose=verbose)
+                hosts = group.getHosts()
+                hdict = sch.getHostNames()
+                counts = stats['open']
+                ahosts = counts.keys() # ahosts is now a list of active hosts
+                # now add disabled hosts.
+                for k in stats['bad'].keys():
+                    ahosts.append('%s:%s'%k)
+                ahosts.sort()
+                for h in ahosts:
+                    xg.appendChild(doc.createTextNode("\n            "))
+                    xh = doc.createElement("host")
+                    xh.setAttribute('name', hdict[h])
+                    xh.setAttribute('ip', h)
+                    xg.appendChild(xh)
+                xg.appendChild(doc.createTextNode("\n        "))
+            serv.appendChild(doc.createTextNode("\n        "))
+            eg = service.getEnabledGroup()
+            xeg = doc.createElement("enable")
+            xeg.setAttribute("group", eg.name)
+            serv.appendChild(xeg)
+            serv.appendChild(doc.createTextNode("\n    "))
+        top.appendChild(doc.createTextNode("\n    "))
+
+        # now the admin block
+        admin = self.admin
+        if admin is not None:
+            xa = doc.createElement("admin")
+            xa.setAttribute("listen", "%s:%s"%admin.listen)
+            top.appendChild(xa)
+            for user in admin.getUsers():
+                xa.appendChild(doc.createTextNode("\n        "))
+                xu = doc.createElement("user")
+                xu.setAttribute("name", user.name)
+                xu.setAttribute("password", user.password)
+                xu.setAttribute("access", user.access)
+                xa.appendChild(xu)
+            xa.appendChild(doc.createTextNode("\n    "))
+            top.appendChild(doc.createTextNode("\n    "))
+
+        # finally, the logging section (if set)
+        if self.logging_file is not None:
+            xl = doc.createElement("logging")
+            xl.setAttribute("file", self.logging_file)
+            top.appendChild(xl)
+
+        # final newline
+        top.appendChild(doc.createTextNode("\n"))
+
+        # and spit out the XML
+        return doc.toxml()
 
 if __name__ == "__main__":
     import sys

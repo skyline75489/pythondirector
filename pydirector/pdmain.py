@@ -2,7 +2,7 @@
 # Copyright (c) 2002-2004 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdmain.py,v 1.11 2004/12/14 13:31:39 anthonybaxter Exp $
+# $Id: pdmain.py,v 1.12 2006/03/16 07:10:41 anthonybaxter Exp $
 #
 
 import sys
@@ -12,11 +12,13 @@ if sys.version_info < (2,2):
 class PythonDirector(object):
 
     def __init__(self, config):
-        from pydirector import pdconf
         self.listeners = {}
         self.schedulers = {}
         self.manager = None
+        from pydirector import pdconf
         self.conf = pdconf.PDConfig(config)
+        import pdlogging
+        pdlogging.initlog(self.conf.logging_file)
         self.createManager()
         self.createListeners()
 
