@@ -1,18 +1,20 @@
 #
-# Copyright (c) 2002-2004 ekit.com Inc (http://www.ekit-inc.com)
+# Copyright (c) 2002-2006 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdadmin.py,v 1.17 2006/03/16 07:10:41 anthonybaxter Exp $
+# $Id: pdadmin.py,v 1.18 2006/03/17 04:58:37 anthonybaxter Exp $
 #
 
 import sys
 if sys.version_info < (2,2):
     class object: pass
 
-import threading, BaseHTTPServer, SocketServer, urlparse, re, urllib
-import socket, sys, traceback, time
+import threading, SocketServer, urlparse, re, urllib
+from BaseHTTPServer import BaseHTTPRequestHandler
+import socket, traceback
 import micropubl
 from pydirector import Version, pdlogging
+from time import time, ctime
 
 try:
     from M2Crypto import SSL
@@ -20,13 +22,14 @@ except ImportError:
     SSL = None
 
 def start(adminconf, director):
-    AdminClass.director = director
-    AdminClass.config = adminconf
-    AdminClass.starttime = time.time()
+    AdminInterface.director = director
+    AdminInterface.config = adminconf
+    AdminInterface.starttime = time()
     if adminconf.secure == 'yes' and SSL is not None:
-        tcps = PDTCPServerSSL(adminconf.listen, AdminClass, get_ssl_context())
+        tcps = PDTCPServerSSL(adminconf.listen, AdminInterface, 
+                                                        get_ssl_context())
     else:
-        tcps = PDTCPServer(adminconf.listen, AdminClass)
+        tcps = PDTCPServer(adminconf.listen, AdminInterface)
     at = threading.Thread(target=tcps.serve_forever)
     at.setDaemon(1)
     at.start()
@@ -37,7 +40,7 @@ class PDTCPServerBase:
         "overridden from SocketServer.BaseServer"
         nil, t, v, tbinfo = pdlogging.compact_traceback()
         pdlogging.log("ADMIN(Exception) %s - %s: %s %s\n"%
-                (time.ctime(time.time()), t,v,tbinfo))
+                (ctime(), t,v,tbinfo))
 
 class PDTCPServer(SocketServer.ThreadingTCPServer, PDTCPServerBase):
     allow_reuse_address = 1
@@ -46,18 +49,19 @@ if SSL is not None:
     class PDTCPServerSSL(SSL.ThreadingSSLServer, PDTCPServerBase):
         allow_reuse_address = 1
         def __init__(self, server_addr, handler, ssl_ctx):
-            SSL.ThreadingSSLServer.__init__(self, server_addr, handler, ssl_ctx)
-            self.server_name = server_addr[0]
-            self.server_port = server_addr[1]
+            SSL.ThreadingSSLServer.__init__(self, server_addr, handler, 
+                                            ssl_ctx)
+            self.server_name, self.server_port = server_addr
 
         def finish(self):
-            self.request.set_shutdown(SSL.SSL_RECEIVED_SHUTDOWN | SSL.SSL_SENT_SHUTDOWN)
+            self.request.set_shutdown(SSL.SSL_RECEIVED_SHUTDOWN | 
+                                                    SSL.SSL_SENT_SHUTDOWN)
             self.request.close()
 
 def get_ssl_context():
     from M2Crypto import Rand
     Rand.load_file('randpool.dat', -1)
-    ctx = init_context('sslv23', 'server.pem', 'ca.pem', \
+    ctx = init_context('sslv23', 'server.pem', 'ca.pem', 
         SSL.verify_none)
         #SSL.verify_peer | SSL.verify_fail_if_no_peer_cert)
     ctx.set_tmp_dh('dh1024.pem')
@@ -78,17 +82,16 @@ def init_context(protocol, certfile, cafile, verify, verify_depth=10):
 
 
 
-class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher):
+class AdminInterface(BaseHTTPRequestHandler, micropubl.MicroPublisher):
     server_version = "pythondirector/%s"%Version
-    director = None
-    config = None
-    starttime = None
+    director = config = starttime = None
     published_prefix = "pdadmin_"
 
     def getUser(self, authstr):
         from base64 import decodestring
         type,auth = authstr.split()
         if type.lower() != 'basic':
+            # XXX should handle digest at some point.
             return None
         auth = decodestring(auth)
         user,pw = auth.split(':',1)
@@ -121,7 +124,8 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
                 W('<META HTTP-EQUIV=Refresh CONTENT="60; URL=%s">'%refresh)
             W("""</head></body>""")
             W("""
-            <div class="title">Python Director version %s, running on host %s.</div>
+            <div class="title">Python Director version %s, running on host %s.
+            </div>
             """%(self.server_version, socket.gethostname()))
 
     def footer(self, message=''):
@@ -155,11 +159,8 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
             self.log_exception()
 
     def do_request(self):
-        #print "URL",self.path
         h,p,u,p,q,f = urlparse.urlparse(self.path)
-
         authstr = self.headers.get('Authorization','')
-        #print "authstr", authstr
         if authstr:
             user = self.getUser(authstr)
         if not (authstr and user):
@@ -205,14 +206,12 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
             <p>Python Director version %s, running on %s</p>
             <p>Running since %s</p>
             """%(self.server_version,
-                 socket.gethostname(),
-                 time.ctime(self.starttime)))
+                 socket.gethostname(), ctime(self.starttime)))
         self.footer()
 
     def pdadmin_running_xml(self, verbose=0, Access='Read'):
-        #from xml.dom.minidom import Document
         self.header(html=0)
-        self.wfile.write(self.conf.toxml(verbose=verbose))
+        self.wfile.write(self.config.toxml(self.director, verbose=verbose))
 
     def pdadmin_running_txt(self, verbose=0, Access='Read'):
         self.header(html=0)
@@ -226,7 +225,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
             for group in groups:
                 sch = self.director.getScheduler(service.name, group.name)
                 stats = sch.getStats(verbose=verbose)
-                hosts = group.getHosts()
+                #hosts = group.getHosts()
                 hdict = sch.getHostNames()
                 if group is eg:
                     klass = 'enabled'
@@ -238,7 +237,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
                 k.sort() # k is now a list of hosts in the opencount stats
                 for h in k:
                     W("host %s %s "%(hdict[h], h))
-                    if counts.has_key(h):
+                    if h in counts:
                         W("%s -\n"%counts[h])
                     else:
                         W("- -\n")
@@ -249,17 +248,22 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
                     when,what = bad[k]
                     W(" %s -\n"%what)
 
-    def pdadmin_running(self, verbose=0, refresh=0, ignore='', resultmessage='', Access='Read'):
+    def pdadmin_running(self, verbose=0, refresh=0, ignore='', 
+                                    resultmessage='', Access='Read'):
         from urllib import quote
-        self.header(html=1, refresh='/running?refresh=1&ignore=%s'%time.time())
+        self.header(html=1, refresh='/running?refresh=1&ignore=%s'%time())
         W = self.wfile.write
         W('<p><b>current config</b></p>\n')
-        W('<p>last update at %s</p>\n'%time.ctime(time.time()))
-        W('<p><a class="button" href="/running?ignore=%s">Refresh</a>'%time.time())
+        W('<p>last update at %s</p>\n'%ctime())
+        W('<p><a class="button" href="/running?ignore=%s">Refresh</a>'%
+                                                                time())
         if refresh:
-            W('<a class="button" href="/running?ignore=%s">Stop auto-refresh</a></p>'%time.time())
+            W('''<a class="button" 
+                href="/running?ignore=%s">Stop auto-refresh</a></p>'''%
+                time())
         else:
-            W('<a class="button" href="/running?refresh=1&ignore=%s">Start auto-refresh</a></p>'%time.time())
+            W('<a class="button" href="/running?refresh=1&ignore=%s">'%time()
+                + 'Start auto-refresh</a></p>')
         W("<p></p>\n")
         conf = self.director.conf
         for service in conf.getServices():
@@ -304,11 +308,11 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
                 for h in k:
                     W('<tr class="%s"><td>'%klass)
                     W("%s</td><td><tt>%s</tt></td>\n"%(hdict[h], h))
-                    if counts.has_key(h):
+                    if h in counts:
                         oc = counts[h]
                     else:
                         oc = '--'
-                    if totals.has_key(h):
+                    if h in totals:
                         tc = totals[h]
                     else:
                         tc = '--'
@@ -378,8 +382,8 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
     def pdadmin_status_txt(self, verbose=0, Access='Read'):
         self.header(html=0)
         W = self.wfile.write
-        # needs to handle multiple listeners per service!
-        raise "Broken", "update me!"
+        # XXXX needs to handle multiple listeners per service!
+        raise ValueError("update me!")
         for listener in self.director.listeners.values():
             sch_stats = listener.scheduler.getStats(verbose='verbose')
             lh,lp = listener.listening_address
@@ -394,17 +398,17 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
                     W("disabled: %s:%s\n"%b)
 
     def pdadmin_addUser(self, name, password, access, Access='Write'):
-        if self.adminconf.getUser(name):
+        if self.config.getUser(name):
             self.action_done('user %s already exists'%name)
             self.wfile.write("NOT OK\n")
         else:
-            self.adminconf.addUser(name, password, access)
+            self.config.addUser(name, password, access)
             self.action_done('user %s added'%name)
             self.wfile.write("OK\n")
 
     def pdadmin_delUser(self, name, Access='Write'):
-        if self.adminconf.getUser(name):
-            self.adminconf.delUser(name)
+        if self.config.getUser(name):
+            self.config.delUser(name)
             self.action_done('user %s deleted'%name)
             self.wfile.write("OK\n")
         else:
@@ -425,7 +429,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
     def log_exception(self):
         nil, t, v, tbinfo = pdlogging.compact_traceback()
         pdlogging.log("ADMIN(Exception) %s - %s: %s %s\n"%
-                (time.ctime(time.time()), t,v,tbinfo))
+                (ctime(), t,v,tbinfo))
 
 
 

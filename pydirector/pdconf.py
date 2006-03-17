@@ -1,8 +1,8 @@
 #
-# Copyright (c) 2002-2004 ekit.com Inc (http://www.ekit-inc.com)
+# Copyright (c) 2002-2006 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdconf.py,v 1.19 2006/03/16 07:10:41 anthonybaxter Exp $
+# $Id: pdconf.py,v 1.20 2006/03/17 04:58:37 anthonybaxter Exp $
 #
 
 import sys
@@ -80,8 +80,7 @@ class PDService(object):
         for host in groupobj.childNodes:
             if host.nodeName in ("#text", "#comment"): continue
             if host.nodeName != u'host':
-                raise ConfigError, \
-                    "expected 'host', got '%s'"%host.nodeName
+                raise ConfigError("expected 'host', got '%s'"%host.nodeName)
             name = host.getAttribute('name')
             if not name: name = 'host.%s'%cc
             newgroup.addHost(name, host.getAttribute('ip'))
@@ -101,18 +100,23 @@ class PDService(object):
         return self.groups.get(self.enabledgroup)
 
     def checkSanity(self):
-        if not self.name: raise ServiceError, "no name set"
-        if not self.listen: raise ServiceError, "no listen address set"
-        if not self.groups: raise ServiceError, "no host groups"
-        if not self.enabledgroup: raise ServiceError, "no group enabled"
-        if not self.groups.get(self.enabledgroup): raise GroupError, \
-                    "enabled group '%s' not defined"%self.enabledgroup
+        if not self.name: 
+            raise ServiceError("no name set")
+        if not self.listen: 
+            raise ServiceError("no listen address set")
+        if not self.groups: 
+            raise ServiceError("no host groups")
+        if not self.enabledgroup: 
+            raise ServiceError("no group enabled")
+        if not self.groups.get(self.enabledgroup): 
+            raise GroupError("enabled group '%s' not defined"%self.enabledgroup)
         for group in self.groups.values():
-            if not group.name: raise GroupError, "no group name set"
-            if not group.scheduler: raise GroupError, \
-                    "no scheduler set for %s"%group.name
-            if not group.hosts: raise GroupError, \
-                    "no hosts set for %s"%group.name
+            if not group.name: 
+                raise GroupError("no group name set")
+            if not group.scheduler: 
+                raise GroupError("no scheduler set for %s"%group.name)
+            if not group.hosts: 
+                raise GroupError("no hosts set for %s"%group.name)
 
 class PDAdminUser(object):
     __slots__ = [ 'name', 'password', 'access' ]
@@ -150,7 +154,7 @@ class PDAdmin(object):
         self.userdb[name] = u
 
     def delUser(self, name):
-        if self.userdb.has_key(name):
+        if name in self.userdb:
             del self.userdb[name]
             return 1
         else:
@@ -182,20 +186,21 @@ class PDConfig(object):
         self.logging_file = None
         dom = self._loadDOM(filename, xml)
         if dom.nodeName != 'pdconfig':
-            raise ConfigError, "expected top level 'pdconfig', got '%s'"%(
-                                                                dom.nodeName)
+            raise ConfigError("expected top level 'pdconfig', got '%s'"%(
+                                                                dom.nodeName))
         for item in dom.childNodes:
-            if item.nodeName in ("#text", "#comment"): continue
+            if item.nodeName in ("#text", "#comment"): 
+                continue
             if item.nodeName not in ( u'service', u'admin', u'logging' ):
-                raise ConfigError, \
-                    "expected 'service' or 'admin', got '%s'"%item.nodeName
+                raise ConfigError(
+                    "expected 'service' or 'admin', got '%s'"%item.nodeName)
             if item.nodeName == u'service':
                 self.loadService(item)
             elif item.nodeName == u'admin':
                 if self.admin is None:
                     self.loadAdmin(item)
                 else:
-                    raise ConfigError, "only one 'admin' block allowed"
+                    raise ConfigError("only one 'admin' block allowed")
             elif item.nodeName == u'logging':
                 self.logging_file = item.getAttribute('file')
                 pdlogging.initlog(item.getAttribute('file'))
@@ -205,7 +210,7 @@ class PDConfig(object):
         if filename is not None:
             xml = open(filename).read()
         elif xml is None:
-            raise ConfigError, "need filename or xml"
+            raise ConfigError("need filename or xml")
         self.dom = parseString(xml)
         return self.dom.childNodes[0]
 
@@ -219,7 +224,7 @@ class PDConfig(object):
             if user.nodeName == u'user':
                 adminServer.loadUser(user)
             else:
-                raise ConfigError, "only expect to see users in admin block"
+                raise ConfigError("only expect to see users in admin block")
         self.admin = adminServer
 
     def getService(self, serviceName):
@@ -245,7 +250,7 @@ class PDConfig(object):
             elif c.nodeName == "#comment":
                 continue
             else:
-                raise ConfigError, "unknown node '%s'"%c.nodeName
+                raise ConfigError("unknown node '%s'"%c.nodeName)
         newService.checkSanity()
         self.services[serviceName] = newService
 
@@ -254,7 +259,7 @@ class PDConfig(object):
         #import pdlogging
         #pdlogging.initlog(self.logging_file)
 
-    def toxml(self, verbose=0):
+    def toxml(self, director, verbose=0):
         from xml.dom.minidom import Document
         doc = Document()
         top = doc.createElement("pdconfig")
@@ -274,13 +279,13 @@ class PDConfig(object):
             groups = service.getGroups()
             for group in groups:
                 serv.appendChild(doc.createTextNode("\n        "))
-                sch = self.director.getScheduler(service.name, group.name)
+                sch = director.getScheduler(service.name, group.name)
                 xg = doc.createElement("group")
                 xg.setAttribute('name', group.name)
                 xg.setAttribute('scheduler', sch.schedulerName)
                 serv.appendChild(xg)
                 stats = sch.getStats(verbose=verbose)
-                hosts = group.getHosts()
+                #hosts = group.getHosts()
                 hdict = sch.getHostNames()
                 counts = stats['open']
                 ahosts = counts.keys() # ahosts is now a list of active hosts
@@ -332,5 +337,4 @@ class PDConfig(object):
         return doc.toxml()
 
 if __name__ == "__main__":
-    import sys
     PDConfig(sys.argv[1])

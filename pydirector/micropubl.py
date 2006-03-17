@@ -1,8 +1,8 @@
 #
-# Copyright (c) 2002-2004 ekit.com Inc (http://www.ekit-inc.com)
+# Copyright (c) 2002-2006 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: micropubl.py,v 1.5 2004/12/14 13:31:39 anthonybaxter Exp $
+# $Id: micropubl.py,v 1.6 2006/03/17 04:58:37 anthonybaxter Exp $
 #
 
 import sys
@@ -33,12 +33,12 @@ class MicroPublisher(object):
     def publish(self, method, args, user):
         args = patchArgs(args)
         if not hasattr(self, '%s%s'%(self.published_prefix, method)):
-            raise NotFoundError, "method %s not found"%method
+            raise NotFoundError("method %s not found"%method)
         fnarg = getattr(self, '%s%s'%(self.published_prefix, method))
         self.checkArgs(fnarg, args)
         # check that the user has correct privs
         if not user.checkAccess(fnarg, args):
-            raise AccessDenied, "userobject denied access"
+            raise AccessDenied("userobject denied access")
         # finally, call the method
         fnarg(**args)
 
@@ -57,19 +57,20 @@ class MicroPublisher(object):
         # first, check for missing required args
         missing = []
         for a in argsneeded:
-            if not args.has_key(a):
+            if a not in args:
                 missing.append(a)
         if missing:
-            raise MissingArgumentError, \
-                "missing argument(s): %s"%(', '.join(missing))
+            raise MissingArgumentError(
+                "missing arg(s): %s"%(', '.join(missing)))
         # now, check if it can handle unknown args (if any provided)
+        # XXX doesn't handle keyword args right now. sigh.
         if 0: #not kwarg:
             provided = args.keys()
             for a in arglist:
                 provided.remove(a)
             if provided:
-                raise UnhandledArgumentError, \
-                    "Additional unhandled argument(s) %s"%(', '.join(provided))
+                raise UnhandledArgumentError(
+                    "Additional unhandled arg(s) %s"%(', '.join(provided)))
         # all ok to continue. additional checks here
         self.checkPublisherAccess(fn, args)
         return

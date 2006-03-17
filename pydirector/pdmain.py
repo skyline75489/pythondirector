@@ -1,8 +1,8 @@
 #
-# Copyright (c) 2002-2004 ekit.com Inc (http://www.ekit-inc.com)
+# Copyright (c) 2002-2006 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdmain.py,v 1.12 2006/03/16 07:10:41 anthonybaxter Exp $
+# $Id: pdmain.py,v 1.13 2006/03/17 04:58:37 anthonybaxter Exp $
 #
 
 import sys
@@ -12,22 +12,21 @@ if sys.version_info < (2,2):
 class PythonDirector(object):
 
     def __init__(self, config):
+        from pydirector import pdconf
+        import pdlogging
         self.listeners = {}
         self.schedulers = {}
         self.manager = None
-        from pydirector import pdconf
-        self.conf = pdconf.PDConfig(config)
-        import pdlogging
-        pdlogging.initlog(self.conf.logging_file)
+        self.config = pdconf.PDConfig(config)
+        pdlogging.initlog(self.config.logging_file)
         self.createManager()
         self.createListeners()
 
     def start(self, profile=0):
-        import sys
         from pydirector import pdadmin
         from pdnetwork import mainloop
-        if self.conf.admin is not None:
-            pdadmin.start(adminconf=self.conf.admin, director=self)
+        if self.config.admin is not None:
+            pdadmin.start(adminconf=self.config.admin, director=self)
         self.manager.start()
         try:
             if profile:
@@ -63,7 +62,7 @@ class PythonDirector(object):
 
     def createListeners(self):
         from pydirector import pdnetwork, pdconf
-        for service in self.conf.getServices():
+        for service in self.config.getServices():
             self.createSchedulers(service)
             eg = service.getEnabledGroup()
             scheduler = self.getScheduler(service.name, eg.name)
@@ -76,7 +75,7 @@ class PythonDirector(object):
                 self.listeners[service.name].append(l)
 
     def enableGroup(self, serviceName, groupName):
-        serviceConf = self.conf.getService(serviceName)
+        serviceConf = self.config.getService(serviceName)
         group = serviceConf.getGroup(groupName)
         if group:
             serviceConf.enabledgroup = groupName
@@ -87,7 +86,7 @@ class PythonDirector(object):
             switch the scheduler for a listener. this is needed, e.g. if
             we change the active group
         """
-        serviceConf = self.conf.getService(serviceName)
+        serviceConf = self.config.getService(serviceName)
         eg = serviceConf.getEnabledGroup()
         scheduler = self.getScheduler(serviceName, eg.name)
         for listener in self.listeners[serviceName]:

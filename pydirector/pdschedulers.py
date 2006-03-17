@@ -1,11 +1,16 @@
 #
-# Copyright (c) 2002-2004 ekit.com Inc (http://www.ekit-inc.com)
+# Copyright (c) 2002-2006 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdschedulers.py,v 1.16 2004/12/14 13:31:39 anthonybaxter Exp $
+# $Id: pdschedulers.py,v 1.17 2006/03/17 04:58:37 anthonybaxter Exp $
 #
 
-import sys, time
+
+# XXX The current connection counting is crap. We need to keep some sort 
+# of connection tokens that get mapped to the backend.
+
+import sys
+from time import time
 if sys.version_info < (2,2):
     class object: pass
 
@@ -22,7 +27,7 @@ def createScheduler(groupConfig):
     elif schedulerName == "leastconnsrr":
         return LeastConnsRRScheduler(groupConfig)
     else:
-        raise ValueError, "Unknown scheduler type `%s'"%schedulerName
+        raise ValueError("Unknown scheduler type `%s'"%schedulerName)
 
 class BaseScheduler:
 
@@ -46,10 +51,14 @@ class BaseScheduler:
         #print self.hosts
 
     def getStats(self, verbose=0):
+        """ Returns a dict containing three items - open, totals, bad
+            open and totals are dicts of host:port to counts
+            bad is a dict of host:port to (time,reason)
+        """
         out = {}
         out['open'] = {}
         out['totals'] = {}
-        hc = self.openconns.items()
+        hc = self.openconns.items() # (host,port), count
         hc.sort()
         for h,c in hc:
             out['open']['%s:%s'%h] = c
@@ -74,7 +83,6 @@ class BaseScheduler:
         return "\n".join(out)
 
     def getHost(self, s_id, client_addr=None):
-        from time import time
         host = self.nextHost(client_addr)
         if host:
             cur = self.openconns.get(host)
@@ -98,7 +106,7 @@ class BaseScheduler:
         if cur is not None:
             self.openconns[host] = cur - 1
             self.totalconns[host] += 1
-        self.lastclose[host] = time.time()
+        self.lastclose[host] = time()
 
     def newHost(self, ip, name):
         if type(ip) is not type(()):
@@ -118,9 +126,9 @@ class BaseScheduler:
             for ip in self.hostnames.keys():
                 if self.hostnames[ip] == name:
                     break
-            raise ValueError, "No host named %s"%(name)
+            raise ValueError("No host named %s"%(name))
         else:
-            raise ValueError, "Neither ip nor name supplied"
+            raise ValueError("Neither ip nor name supplied")
         if activegroup and len(self.hosts) == 1:
             return 0
         if ip in self.hosts:
@@ -128,28 +136,28 @@ class BaseScheduler:
             del self.hostnames[ip]
             del self.openconns[ip]
             del self.totalconns[ip]
-        elif self.badhosts.has_key(ip):
+        elif ip in self.badhosts:
             del self.badhosts[ip]
         else:
-            raise ValueError, "Couldn't find host"
+            raise ValueError("Couldn't find host")
         return 1
 
     def deadHost(self, s_id, reason=''):
-        from time import time
         t,host = self.open[s_id]
         if host in self.hosts:
             pdlogging.log("marking host %s down (%s)\n"%(str(host), reason),
                             datestamp=1)
             self.hosts.remove(host)
-        if self.openconns.has_key(host):
+        if host in self.openconns:
             del self.openconns[host]
-        if self.totalconns.has_key(host):
+        if host in self.totalconns:
             del self.totalconns[host]
         self.badhosts[host] = (time(), reason)
         # make sure we also mark this session as done.
         self.doneHost(s_id)
 
-    def nextHost(self):
+    def nextHost(self, client_addr):
+        "Override this in a subclass to actually do the work!"
         raise NotImplementedError
 
 class RandomScheduler(BaseScheduler):
@@ -176,12 +184,15 @@ class RoundRobinScheduler(BaseScheduler):
             d = self.hosts[self.counter]
             self.counter += 1
             return d
+        else:
+            return None
 
 class LeastConnsScheduler(BaseScheduler):
     """
         This scheduler passes the connection to the destination with the
         least number of current open connections. This is a very cheap
-        and quite accurate method of load balancing.
+        and quite accurate method of load balancing. But see the 
+        LeastConnsRRScheduler for a slightly better version.
     """
     schedulerName = "leastconns"
     counter = 0
@@ -198,7 +209,8 @@ class LeastConnsRRScheduler(BaseScheduler):
         The basic LeastConnsScheduler has a problem - it sorts by
         open connections, then by hostname. So hostnames that are
         earlier in the alphabet get many many more hits. This is
-        suboptimal.
+        suboptimal. This one round-robins by the "lastclose" mapping
+        to distribute the load more equitably.
     """
     schedulerName = "leastconnsrr"
     counter = 0

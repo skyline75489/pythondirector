@@ -1,10 +1,10 @@
 #
-# Copyright (c) 2002-2004 ekit.com Inc (http://www.ekit-inc.com)
+# Copyright (c) 2002-2006 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
 # Networking core - twisted version (http://www.twistedmatrix.com)
 #
-# $Id: pdnetworktwisted.py,v 1.12 2006/03/16 07:10:36 anthonybaxter Exp $
+# $Id: pdnetworktwisted.py,v 1.13 2006/03/17 04:58:37 anthonybaxter Exp $
 #
 
 from twisted.internet.protocol import ServerFactory, ClientFactory, Protocol

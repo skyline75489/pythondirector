@@ -6,7 +6,7 @@
 # This code prefers simplicity to elegance. I want something
 # I can read clearly
 #
-# $Id: compareconf.py,v 1.2 2002/07/03 09:17:23 anthonybaxter Exp $
+# $Id: compareconf.py,v 1.3 2006/03/17 04:58:37 anthonybaxter Exp $
 #
 
 class DiffError(Exception): pass
@@ -29,7 +29,7 @@ def compareServices(oldconf, newconf):
     newservices.sort()
     if oldservices != newservices:
         # would we want to enable new services this way?
-        raise DiffError, "can't handle different services list"
+        raise DiffError("can't handle different services list")
     for serviceName in oldservices:
         os = oldconf.services[serviceName]
         ns = newconf.services[serviceName]
@@ -47,8 +47,7 @@ def compareGroups(serviceName, oldservice, newservice):
     newgroups.sort()
     if oldgroups != newgroups:
         # maybe change this after adding 'newGroup' to the api
-        raise DiffError, \
-            "can't handle different groups list for %s"%serviceName
+        raise DiffError("can't handle different groups list for %s"%serviceName)
     for groupName in oldgroups:
         og = oldservice.groups[groupName]
         ng = newservice.groups[groupName]
@@ -84,7 +83,7 @@ def compareHosts(serviceName, groupName, oldgroup, newgroup):
                  'group'   : groupName,
                  'ip'      : oldhost.ip }))
         else:
-            raise DiffError, "what the hey?"
+            raise DiffError("what the hey - host not in oldhosts or newhosts?")
     return ret
 
 def mergelists(l1, l2):
@@ -111,7 +110,7 @@ def compareAdmin(oldconf, newconf):
         # both empty
         return ret
     if oldconf.admin is None or newconf.admin is None:
-        raise DiffError, "can't handle enabling/disabling admin"
+        raise DiffError("can't handle enabling/disabling admin")
     else:
         # we should also handle looking at the listen (and secure,
         # when added). needs web api commands.
@@ -147,7 +146,7 @@ def compareUsers(olduserdb, newuserdb):
             ret.append(("delUser",
                 {'name'     : user }))
         else:
-            raise DiffError, "what the hey - user %s?"%user
+            raise DiffError("what the hey - unknown user %s?"%user)
     return ret
 
 
