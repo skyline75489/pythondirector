@@ -46,16 +46,32 @@ Requirements
 
 Performance:
 
-  - On my 2004 notebook, load balancing an Apache on the same local Ethernet
-    (serving a static 18K text file) gets 155 connections per second and
-    2850 kbytes/s throughput (apachebench -n 2000 -c 10). Connecting directly
-    to the Apache gets 180 conns/sec and 3400kbytes/s. So unless you're 
-    serving really really stupidly high hit rates it's unlikely to be 
-    pythondirector causing you difficulties. (Note that 155 connections/sec 
-    is 13 million hits per day...)
+  - On my 2005 notebook, load balancing against 4 SimpleHTTPServers 
+    serving a simple local file manages 700 requests/sec and 15Mbytes/sec. 
+    This is talking over the loopback network interface, using apachebench
+    (ab -c 5 -n 30000).
 
-  - Running purely over the loopback interface to a local Apache seems to
-    max out at around 350 conns/second.
+    For comparision, talking directly to a single backend gets 1900 
+    requests/sec at 44Mbytes/sec. 
+
+    This is a Dell Latitude D600 with a 2.0GHz Pentium M CPU, running 
+    Ubuntu Breezy (05.10). The CPU's power management was disabled for 
+    the tests.
+
+    So unless you're serving really really stupidly high hit rates it's 
+    unlikely to be pythondirector causing you difficulties. 700 requests/sec 
+    is 60 million hits per day, and that's over a terabyte per day of 
+    traffic. pythondirector also scales nicely with CPU, although it won't
+    get any benefits from multiple CPUs.
+
+  - As a historical note, my 2003 notebook, load balancing an Apache on 
+    the same local Ethernet (serving a static 18K text file) gets 155 
+    connections per second and 2850 kbytes/s throughput (ab -n 2000 -c 10). 
+    Connecting directly to the Apache gets 180 conns/sec and 3400kbytes/s. 
+
+    This was a Dell Inspiron with a 700MHz P3M. 
+
+  - Python 2.5 is approximately 10% faster than Python 2.3.
 
 ----------------------------------------------------------------------
 
@@ -70,12 +86,16 @@ Twisted vs. asyncore
 Pythondirector will use either twisted or asyncore for it's networking -
 it prefers twisted.  The twisted implementation is much, much faster, 
 but does require an additional package - see http://www.twistedmatrix.com 
-for the software.
+for the software. For concrete numbers, I see twisted 1.3 at 700 requests/sec,
+while the asyncore version tops out at 340 requests/sec. 
 
 I've also seen "weird failures" from asyncore with some sort of nasty
 race condition. 
 
 A future release will probably remove support for asyncore.
+
+A final note - using Twisted 2.0 gives results about 20% less than 
+Twisted 1.3. I haven't investigated the slowdown yet.
 
 ----------------------------------------------------------------------
 
