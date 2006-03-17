@@ -1,7 +1,7 @@
-README for pythondirector 1.0.0
+README for pythondirector 1.1.0
 
 This is a pure python TCP load balancer. It takes inbound TCP
-connections and connects them to one of a number of backend
+connections and connects them to one of a number of back-end
 servers. 
 
 Project home: http://pythondirector.sourceforge.net/
@@ -26,24 +26,35 @@ Features:
 
   - xml based configuration file
 
-  - seperate management thread that periodically re-adds failed hosts
+  - separate management thread that periodically re-adds failed hosts
     if they've come back up.
 
-  - optional builtin webserver for admin
+  - optional built-in web server for admin
 
 ----------------------------------------------------------------------
 
+Requirements
+
+  - Python 2.2 or newer is required. Significant performance improvements
+    in Python mean that you should be using 2.3 or even newer.
+
+  - Twisted 1.3 or 2.x are needed for the (preferred) twisted networking 
+    layer. Earlier versions of twisted may work, but are unsupported.
+
+----------------------------------------------------------------------
+
+
 Performance:
 
-  - On my notebook, load balancing an apache on the same local ethernet
+  - On my 2004 notebook, load balancing an Apache on the same local Ethernet
     (serving a static 18K text file) gets 155 connections per second and
     2850 kbytes/s throughput (apachebench -n 2000 -c 10). Connecting directly
-    to the apache gets 180 conns/sec and 3400kbytes/s. So unless you're 
+    to the Apache gets 180 conns/sec and 3400kbytes/s. So unless you're 
     serving really really stupidly high hit rates it's unlikely to be 
     pythondirector causing you difficulties. (Note that 155 connections/sec 
     is 13 million hits per day...)
 
-  - Running purely over the loopback interface to a local apache seems to
+  - Running purely over the loopback interface to a local Apache seems to
     max out at around 350 conns/second.
 
 ----------------------------------------------------------------------
@@ -64,13 +75,19 @@ for the software.
 I've also seen "weird failures" from asyncore with some sort of nasty
 race condition. 
 
+A future release will probably remove support for asyncore.
+
 ----------------------------------------------------------------------
+
+Changes from 1.0.0 to 1.1.0
+
+- Bug fixes, code modernisation.
 
 Changes from 0.0.7 to 1.0.0
 
 - Very few, mostly this is to update the project to 'stable' status.
 - The networking code now uses twisted if available, and falls back
-  to asyncore.
+  to asyncore. 
 
 Changes from 0.0.6 to 0.0.7
 
@@ -78,28 +95,29 @@ Changes from 0.0.6 to 0.0.7
   the scheduler and the administrative interface to mean 'listen on
   all interfaces'. Considerably more obvious than '0.0.0.0'. Thanks
   to Andrew Sydelko for the idea.
-- New "leastconnsrr" scheduler - this is leastconns, with a roundrobin
+- New "leastconnsrr" scheduler - this is leastconns, with a round-robin
   as well. Previously, leastconns would keep the list of hosts sorted,
   which often meant one system got beaten up pretty badly.
-- Twisted backend group selection works again.
+- Twisted back-end group selection works again.
 - The client address is now passed to the scheduler's getHost() method. 
   This allows the creation of "sticky" schedulers, where a client is 
-  (by preference) sent to the same backend server. The factory function
+  (by preference) sent to the same back-end server. The factory function
   for schedulers will change to allow things like "roundrobin,sticky".
 
 Changes from 0.0.5 to 0.0.6:
 
-- fixed an error in the (hopefully rare) case where all backend servers
+- fixed an error in the (hopefully rare) case where all back-end servers
   are down.
 - the main script uses resource.setrlimit() to boost the number of open
-  filedescriptors (solaris has stupidly low defaults)
-- when all backend servers are down, the manager thread goes into a much
+  file descriptors (Solaris, HP-UX and other oddball Unixes have stupidly 
+  low defaults)
+- when all back-end servers are down, the manager thread goes into a much
   more aggressive mode re-adding them.
 - handle comments in the config file
 
 Changes from 0.0.4 to 0.0.5:
 
-- bunch of bugfixes to the logging
+- bunch of bug fixes to the logging
 - re-implemented the networking code using the 'twisted' framework
   (a simple loopback test:
     asyncore based pydir:
@@ -115,9 +133,9 @@ Changes from 0.0.3 to 0.0.4:
 
 - can now specify more than one listener for a service
 - 'client' in the config XML is now 'host'
-- fixed a bug in leastconns and roundrobin scheduler if all backends
+- fixed a bug in leastconns and roundrobin scheduler if all back-ends
   were unavailable.
-- whole lotta documentation added.
+- whole lot of documentation added.
 - running display in web api now shows count of total connections
 - running display now has refresh and auto-refresh
 - compareconf module - takes a running config and a new config and
@@ -143,7 +161,7 @@ Changes from 0.0.1 to 0.0.2:
 
 This software is covered by the following license:
 
-Copyright (c) 2002-2004 ekit.com Inc (http://www.ekit-inc.com/) 
+Copyright (c) 2002-2006 ekit.com Inc (http://www.ekit-inc.com/) 
 and Anthony Baxter <anthony@interlink.com.au>
 
 Permission is hereby granted, free of charge, to any person obtaining a
