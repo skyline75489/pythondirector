@@ -2,7 +2,7 @@
 # Copyright (c) 2002-2006 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdschedulers.py,v 1.17 2006/03/17 04:58:37 anthonybaxter Exp $
+# $Id: pdschedulers.py,v 1.18 2006/03/17 13:20:56 anthonybaxter Exp $
 #
 
 
@@ -10,11 +10,8 @@
 # of connection tokens that get mapped to the backend.
 
 import sys
-from time import time
-if sys.version_info < (2,2):
-    class object: pass
-
 import pdconf, pdlogging
+from time import time
 
 def createScheduler(groupConfig):
     schedulerName = groupConfig.scheduler

@@ -2,12 +2,8 @@
 # Copyright (c) 2002-2006 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: micropubl.py,v 1.6 2006/03/17 04:58:37 anthonybaxter Exp $
+# $Id: micropubl.py,v 1.7 2006/03/17 13:20:56 anthonybaxter Exp $
 #
-
-import sys
-if sys.version_info < (2,2):
-    class object: pass
 
 # a.k.a babybobo. A very small and limited object publisher.
 # where possible, it's not tied to any particular mechanism
