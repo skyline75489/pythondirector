@@ -6,7 +6,7 @@
 # Copyright (c) 2002-2006 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pydir.py,v 1.13 2006/03/17 13:20:55 anthonybaxter Exp $
+# $Id: pydir.py,v 1.14 2006/03/22 11:31:44 anthonybaxter Exp $
 #
 
 import sys, resource
@@ -26,4 +26,3 @@ def main():
 if __name__ == "__main__":
     versionCheck()
     main()
-

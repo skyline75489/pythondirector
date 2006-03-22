@@ -2,11 +2,11 @@
 # Copyright (c) 2002-2006 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdschedulers.py,v 1.18 2006/03/17 13:20:56 anthonybaxter Exp $
+# $Id: pdschedulers.py,v 1.19 2006/03/22 11:31:45 anthonybaxter Exp $
 #
 
 
-# XXX The current connection counting is crap. We need to keep some sort 
+# XXX The current connection counting is crap. We need to keep some sort
 # of connection tokens that get mapped to the backend.
 
 import sys
@@ -188,7 +188,7 @@ class LeastConnsScheduler(BaseScheduler):
     """
         This scheduler passes the connection to the destination with the
         least number of current open connections. This is a very cheap
-        and quite accurate method of load balancing. But see the 
+        and quite accurate method of load balancing. But see the
         LeastConnsRRScheduler for a slightly better version.
     """
     schedulerName = "leastconns"
@@ -215,8 +215,7 @@ class LeastConnsRRScheduler(BaseScheduler):
     def nextHost(self, client_addr):
         if not self.openconns.keys():
             return None
-        hosts = [ (x[1], self.lastclose.get(x[0],0), x[0]) 
+        hosts = [ (x[1], self.lastclose.get(x[0],0), x[0])
                             for x in self.openconns.items() ]
         hosts.sort()
         return hosts[0][2]
-

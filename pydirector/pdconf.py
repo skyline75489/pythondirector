@@ -2,7 +2,7 @@
 # Copyright (c) 2002-2006 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdconf.py,v 1.21 2006/03/17 13:20:56 anthonybaxter Exp $
+# $Id: pdconf.py,v 1.22 2006/03/22 11:31:45 anthonybaxter Exp $
 #
 
 def getDefaultArgs(methodObj):
@@ -96,22 +96,22 @@ class PDService(object):
         return self.groups.get(self.enabledgroup)
 
     def checkSanity(self):
-        if not self.name: 
+        if not self.name:
             raise ServiceError("no name set")
-        if not self.listen: 
+        if not self.listen:
             raise ServiceError("no listen address set")
-        if not self.groups: 
+        if not self.groups:
             raise ServiceError("no host groups")
-        if not self.enabledgroup: 
+        if not self.enabledgroup:
             raise ServiceError("no group enabled")
-        if not self.groups.get(self.enabledgroup): 
+        if not self.groups.get(self.enabledgroup):
             raise GroupError("enabled group '%s' not defined"%self.enabledgroup)
         for group in self.groups.values():
-            if not group.name: 
+            if not group.name:
                 raise GroupError("no group name set")
-            if not group.scheduler: 
+            if not group.scheduler:
                 raise GroupError("no scheduler set for %s"%group.name)
-            if not group.hosts: 
+            if not group.hosts:
                 raise GroupError("no hosts set for %s"%group.name)
 
 class PDAdminUser(object):
@@ -185,7 +185,7 @@ class PDConfig(object):
             raise ConfigError("expected top level 'pdconfig', got '%s'"%(
                                                                 dom.nodeName))
         for item in dom.childNodes:
-            if item.nodeName in ("#text", "#comment"): 
+            if item.nodeName in ("#text", "#comment"):
                 continue
             if item.nodeName not in ( u'service', u'admin', u'logging' ):
                 raise ConfigError(

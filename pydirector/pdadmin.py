@@ -2,7 +2,7 @@
 # Copyright (c) 2002-2006 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdadmin.py,v 1.19 2006/03/17 13:20:56 anthonybaxter Exp $
+# $Id: pdadmin.py,v 1.20 2006/03/22 11:31:45 anthonybaxter Exp $
 #
 
 import threading, SocketServer, urlparse, re, urllib
@@ -22,7 +22,7 @@ def start(adminconf, director):
     AdminInterface.config = adminconf
     AdminInterface.starttime = time()
     if adminconf.secure == 'yes' and SSL is not None:
-        tcps = PDTCPServerSSL(adminconf.listen, AdminInterface, 
+        tcps = PDTCPServerSSL(adminconf.listen, AdminInterface,
                                                         get_ssl_context())
     else:
         tcps = PDTCPServer(adminconf.listen, AdminInterface)
@@ -45,19 +45,19 @@ if SSL is not None:
     class PDTCPServerSSL(SSL.ThreadingSSLServer, PDTCPServerBase):
         allow_reuse_address = 1
         def __init__(self, server_addr, handler, ssl_ctx):
-            SSL.ThreadingSSLServer.__init__(self, server_addr, handler, 
+            SSL.ThreadingSSLServer.__init__(self, server_addr, handler,
                                             ssl_ctx)
             self.server_name, self.server_port = server_addr
 
         def finish(self):
-            self.request.set_shutdown(SSL.SSL_RECEIVED_SHUTDOWN | 
+            self.request.set_shutdown(SSL.SSL_RECEIVED_SHUTDOWN |
                                                     SSL.SSL_SENT_SHUTDOWN)
             self.request.close()
 
 def get_ssl_context():
     from M2Crypto import Rand
     Rand.load_file('randpool.dat', -1)
-    ctx = init_context('sslv23', 'server.pem', 'ca.pem', 
+    ctx = init_context('sslv23', 'server.pem', 'ca.pem',
         SSL.verify_none)
         #SSL.verify_peer | SSL.verify_fail_if_no_peer_cert)
     ctx.set_tmp_dh('dh1024.pem')
@@ -244,7 +244,7 @@ class AdminInterface(BaseHTTPRequestHandler, micropubl.MicroPublisher):
                     when,what = bad[k]
                     W(" %s -\n"%what)
 
-    def pdadmin_running(self, verbose=0, refresh=0, ignore='', 
+    def pdadmin_running(self, verbose=0, refresh=0, ignore='',
                                     resultmessage='', Access='Read'):
         from urllib import quote
         self.header(html=1, refresh='/running?refresh=1&ignore=%s'%time())
@@ -254,7 +254,7 @@ class AdminInterface(BaseHTTPRequestHandler, micropubl.MicroPublisher):
         W('<p><a class="button" href="/running?ignore=%s">Refresh</a>'%
                                                                 time())
         if refresh:
-            W('''<a class="button" 
+            W('''<a class="button"
                 href="/running?ignore=%s">Stop auto-refresh</a></p>'''%
                 time())
         else:
