@@ -6,10 +6,15 @@
 # Copyright (c) 2002-2006 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pydir.py,v 1.14 2006/03/22 11:31:44 anthonybaxter Exp $
+# $Id: pydir.py,v 1.15 2006/03/26 07:55:30 anthonybaxter Exp $
 #
 
-import sys, resource
+import sys
+
+try:
+    import resource
+except ImportError:
+    resource = None
 
 def versionCheck():
     MINVERSION = (2,2)
@@ -18,7 +23,9 @@ def versionCheck():
 
 def main():
     from pydirector.pdmain import PythonDirector
-    resource.setrlimit(resource.RLIMIT_NOFILE, (1024, 1024))
+    # Some Unix variants have idiotically low defaults for open FDs
+    if resource is not None:
+        resource.setrlimit(resource.RLIMIT_NOFILE, (1024, 1024))
     config = sys.argv[1]
     pd = PythonDirector(config)
     pd.start(profile=0)
