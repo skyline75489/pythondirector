@@ -2,8 +2,10 @@
 # Copyright (c) 2002-2006 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdmain.py,v 1.14 2006/03/17 13:20:56 anthonybaxter Exp $
+# $Id: pdmain.py,v 1.15 2006/04/05 03:06:09 anthonybaxter Exp $
 #
+
+import sys
 
 class PythonDirector(object):
 
@@ -42,7 +44,8 @@ class PythonDirector(object):
     def createManager(self):
         from pydirector import pdmanager
         import threading
-        manager = pdmanager.SchedulerManager(self)
+        checktime = self.config.checktime or 120
+        manager = pdmanager.SchedulerManager(self, checktime=checktime)
         mt = threading.Thread(target=manager.mainloop)
         mt.setDaemon(1)
         self.manager = mt

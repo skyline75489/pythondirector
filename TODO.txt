@@ -1,3 +1,6 @@
+Re-enable button for a disabled host
+Make the auto-readd time an option.
+
 Things that could be added:
     logging cleanup
     scheduler stats structures cleanup

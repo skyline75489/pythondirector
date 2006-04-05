@@ -2,12 +2,12 @@
 # Copyright (c) 2002-2006 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdadmin.py,v 1.20 2006/03/22 11:31:45 anthonybaxter Exp $
+# $Id: pdadmin.py,v 1.21 2006/04/05 03:06:09 anthonybaxter Exp $
 #
 
 import threading, SocketServer, urlparse, re, urllib
 from BaseHTTPServer import BaseHTTPRequestHandler
-import socket, traceback
+import socket, traceback, sys
 import micropubl
 from pydirector import Version, pdlogging
 from time import time, ctime

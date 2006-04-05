@@ -2,7 +2,7 @@
 # Copyright (c) 2002-2006 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdconf.py,v 1.22 2006/03/22 11:31:45 anthonybaxter Exp $
+# $Id: pdconf.py,v 1.23 2006/04/05 03:06:09 anthonybaxter Exp $
 #
 
 def getDefaultArgs(methodObj):
@@ -173,13 +173,14 @@ class PDAdmin(object):
 
 
 class PDConfig(object):
-    __slots__ = [ 'services', 'admin', 'dom', 'logging_file' ]
+    __slots__ = [ 'services', 'admin', 'dom', 'logging_file', 'checktime' ]
 
     def __init__(self, filename=None, xml=None):
         import pdlogging
         self.services = {}
         self.admin = None
         self.logging_file = None
+        self.checktime = None
         dom = self._loadDOM(filename, xml)
         if dom.nodeName != 'pdconfig':
             raise ConfigError("expected top level 'pdconfig', got '%s'"%(
@@ -187,9 +188,10 @@ class PDConfig(object):
         for item in dom.childNodes:
             if item.nodeName in ("#text", "#comment"):
                 continue
-            if item.nodeName not in ( u'service', u'admin', u'logging' ):
+            if item.nodeName not in ('service','admin','logging','checktime'):
                 raise ConfigError(
-                    "expected 'service' or 'admin', got '%s'"%item.nodeName)
+                    "expected one of 'service','admin','logging','checktime'"
+                    ", got '%s'"%item.nodeName)
             if item.nodeName == u'service':
                 self.loadService(item)
             elif item.nodeName == u'admin':
@@ -200,6 +202,8 @@ class PDConfig(object):
             elif item.nodeName == u'logging':
                 self.logging_file = item.getAttribute('file')
                 pdlogging.initlog(item.getAttribute('file'))
+            elif item.nodeName == u'checktime':
+                self.checktime = int(item.getAttribute('time'))
 
     def _loadDOM(self, filename, xml):
         from xml.dom.minidom import parseString
@@ -320,10 +324,14 @@ class PDConfig(object):
             xa.appendChild(doc.createTextNode("\n    "))
             top.appendChild(doc.createTextNode("\n    "))
 
-        # finally, the logging section (if set)
         if self.logging_file is not None:
             xl = doc.createElement("logging")
             xl.setAttribute("file", self.logging_file)
+            top.appendChild(xl)
+
+        if self.checktime is not None:
+            xl = doc.createElement("checktime")
+            xl.setAttribute("time", self.checktime)
             top.appendChild(xl)
 
         # final newline
@@ -333,4 +341,5 @@ class PDConfig(object):
         return doc.toxml()
 
 if __name__ == "__main__":
+    import sys
     PDConfig(sys.argv[1])

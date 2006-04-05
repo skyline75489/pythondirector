@@ -33,4 +33,5 @@
 	<user name="fulluser" password="iy9l0V1MkG1DE" access="full"/>
     </admin>
     <logging file="pydir.log"/>
+    <checktime time="120"/>
 </pdconfig>

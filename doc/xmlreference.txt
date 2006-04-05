@@ -13,6 +13,7 @@ A Python Director config consists of a number of XML directives.
     Must contain one or more <service> nodes.
     Can contain an optional <admin> node.
     Can contain an optional <logging> node.
+    Can contain an optional <checktime> node.
   Other notes:
     None
 
@@ -99,3 +100,12 @@ A Python Director config consists of a number of XML directives.
   Other notes:
     None
 
+<checktime> - logging for python director
+  Child of: <pdconfig>
+  Attributes:
+    time - time to run the checker for a dud host, in seconds. Defaults to 
+        120s
+  Children:
+    No children.
+  Other notes:
+    None
