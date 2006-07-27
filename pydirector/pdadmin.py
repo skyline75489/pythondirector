@@ -2,7 +2,7 @@
 # Copyright (c) 2002-2006 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdadmin.py,v 1.21 2006/04/05 03:06:09 anthonybaxter Exp $
+# $Id: pdadmin.py,v 1.22 2006/07/27 06:58:27 anthonybaxter Exp $
 #
 
 import threading, SocketServer, urlparse, re, urllib
@@ -207,7 +207,7 @@ class AdminInterface(BaseHTTPRequestHandler, micropubl.MicroPublisher):
 
     def pdadmin_running_xml(self, verbose=0, Access='Read'):
         self.header(html=0)
-        self.wfile.write(self.config.toxml(self.director, verbose=verbose))
+        self.wfile.write(self.director.config.toxml(self.director, verbose=verbose))
 
     def pdadmin_running_txt(self, verbose=0, Access='Read'):
         self.header(html=0)
@@ -244,6 +244,18 @@ class AdminInterface(BaseHTTPRequestHandler, micropubl.MicroPublisher):
                     when,what = bad[k]
                     W(" %s -\n"%what)
 
+    def pdadmin_save(self,verbose=0,refresh=0,ignore='',resultmessage='',Access='Read'):
+        self.header(html=0)
+        W = self.wfile.write
+        W('holla')
+        W(str(sys.argv))
+        configstr = self.director.config.toxml(self.director, verbose=verbose)
+        f = open(sys.argv[1],'w')
+        f.write(configstr)
+        f.close()
+        W('<p>config saved to ' + str(sys.argv[1]) + '</p>')
+        
+
     def pdadmin_running(self, verbose=0, refresh=0, ignore='',
                                     resultmessage='', Access='Read'):
         from urllib import quote
@@ -259,7 +271,11 @@ class AdminInterface(BaseHTTPRequestHandler, micropubl.MicroPublisher):
                 time())
         else:
             W('<a class="button" href="/running?refresh=1&ignore=%s">'%time()
-                + 'Start auto-refresh</a></p>')
+                + 'Start auto-refresh</a> ')
+
+        W('''<a class="button" href="/save">Save running.xml</a>''')
+        W('''</p>''')
+
         W("<p></p>\n")
         conf = self.director.conf
         for service in conf.getServices():

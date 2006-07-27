@@ -2,7 +2,7 @@
 # Copyright (c) 2002-2006 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdconf.py,v 1.23 2006/04/05 03:06:09 anthonybaxter Exp $
+# $Id: pdconf.py,v 1.24 2006/07/27 06:58:27 anthonybaxter Exp $
 #
 
 def getDefaultArgs(methodObj):
@@ -331,7 +331,7 @@ class PDConfig(object):
 
         if self.checktime is not None:
             xl = doc.createElement("checktime")
-            xl.setAttribute("time", self.checktime)
+            xl.setAttribute("time", str(self.checktime))
             top.appendChild(xl)
 
         # final newline

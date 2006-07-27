@@ -2,7 +2,7 @@
 # Copyright (c) 2002-2006 ekit.com Inc (http://www.ekit-inc.com)
 # and Anthony Baxter <anthony@interlink.com.au>
 #
-# $Id: pdmain.py,v 1.15 2006/04/05 03:06:09 anthonybaxter Exp $
+# $Id: pdmain.py,v 1.16 2006/07/27 06:58:27 anthonybaxter Exp $
 #
 
 import sys
@@ -16,6 +16,7 @@ class PythonDirector(object):
         self.schedulers = {}
         self.manager = None
         self.config = pdconf.PDConfig(config)
+        self.conf= self.config
         pdlogging.initlog(self.config.logging_file)
         self.createManager()
         self.createListeners()
